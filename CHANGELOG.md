@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.4.0 / 2020-12-23
+==================
+
+  * updated CHANGELOG.md
+  * Dockerfile: chromium-browser version
+  * Yandex Metrika
+  * flex footer
+
 0.32a5 / 2020-12-07
 ==================
 
