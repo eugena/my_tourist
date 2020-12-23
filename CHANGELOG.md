@@ -98,7 +98,7 @@ Changelog
   * MyTourist project initial commit
   * README.md plus configs
   * updated README.md
-  * updated README.md 
+  * updated README.md
   * initial README.md plus .gitignore
   * updated README.md
   * Презентация pdf
