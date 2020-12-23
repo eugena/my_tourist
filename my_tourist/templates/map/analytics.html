@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% load static bootstrap4 icons %}
+
+{% block meta_title %}Аналитика{% endblock meta_title %}
+
+{% block content %}
+
+    <h4>{% icon 'bar-chart-o' %} Аналитика</h4>
+
+    <h5>Анализ цифрового присутствия выбранных курортов и объем рынка в регионах</h5>
+
+    <form action="{% url 'target_groups' %}" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+    </form>
+
+    <table class="table table-striped table-responsive">
+        <thead>
+        <tr>
+            <th scope="col" class="text-center">#</th>
+            <th scope="col" class="text-center">Код региона</th>
+            <th scope="col" class="text-center">Регион</th>
+            <th scope="col" class="text-center">
+                {% if sort_by != 'popularity_norm' %}<a href="{% url 'analytics' tourism_type=tourism_type  %}">{% endif %}
+                {% icon 'sort-amount-desc' %} Популярность
+                {% if sort_by != 'popularity_norm' %}</a>{% endif %} <a href="#" title="Нормализованная региональная популярность ключевых фраз на {{ last_date|date:"SHORT_DATE_FORMAT" }} по данным Яндекс.Подбор слов"><sup>?</sup></a>
+            </th>
+            <th scope="col" class="text-center">
+                {% if sort_by != 'popularity_norm_delta' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='popularity_norm_delta' %}">{% endif %}
+                {% icon 'sort-amount-desc' %} Изменение популярности
+                {% if sort_by != 'popularity_norm_delta' %}</a>{% endif %} <a href="#" title="Изменение региональной популярности c {{ prev_date|date:"SHORT_DATE_FORMAT" }} по данным Яндекс.Подбор слов"><sup>?</sup></a>
+            </th>
+            <th scope="col" class="text-center">
+                {% if sort_by != 'audience_corr' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='audience_tourism_type_corr' %}">{% endif %}
+                {% icon 'sort-amount-desc' %} {{ tourism_type_title }}
+                {% if sort_by != 'audience_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся категорией «{{ tourism_type_title }}»"><sup>?</sup></a>
+            </th>
+            <th scope="col" class="text-center">
+                {% if sort_by != 'audience_corr' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='audience_corr' %}">{% endif %}
+                {% icon 'sort-amount-desc' %} Все категории
+                {% if sort_by != 'audience_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся туризмом по данным сети ВК"><sup>?</sup></a>
+            </th>
+            <th scope="col" class="text-center">
+                {% if sort_by != 'population' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='population' %}">{% endif %}
+                {% icon 'sort-amount-desc' %} Число жителей
+                {% if sort_by != 'population' %}</a>{% endif %} <a href="#" title="Число жителей региона по данным Росстата на 01.01.2020"><sup>?</sup></a>
+            </th>
+        </tr>
+        </thead>
+        {% for t in regions %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td class="text-center">{{ t.code }}</td>
+                <td>{{ t.region }}</td>
+                <td class="text-center">
+                    {{ t.popularity_norm|floatformat:6 }}
+                </td>
+                <td class="text-center">
+                    {% if t.popularity_norm_delta < 0 %}
+                    <span class="text-danger">{% icon 'arrow-down' %} {{ t.popularity_norm_delta|floatformat:6  }}</span>
+                    {% elif t.popularity_norm_delta > 0 %}
+                    <span class="text-success">{% icon 'arrow-up' %} {{ t.popularity_norm_delta|floatformat:6  }}</span>
+                    {% else %}
+                    <span class="text-muted">{{ 0|floatformat:6  }}</span>
+                    {% endif %}
+                </td>
+                <td class="text-right">{{ t.audience_tourism_type_corr|floatformat:0 }}</td>
+                <td class="text-right">{{ t.audience_corr|floatformat:0 }}</td>
+                <td class="text-right">{{ t.population }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock content %}
+
+{% block js %}
+    {% include 'include/reload_after_type_changing.html'%}
+{% endblock js %}

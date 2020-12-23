@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% load static icons tags %}
+
+{% block head %}{% endblock head %}
+
+{% block meta_title %}Цифровое присутствие{% endblock meta_title %}
+
+{% block content %}
+<div class="switcher">{% if map_type == 'audience' %}<a href="{% url 'index' %}">{% endif %}<small>цифровое присутствие</small>{% if map_type == 'audience' %}</a>{% endif %} | {% if map_type == 'presence' %}<a href="{% url 'index' map_type='audience' %}">{% endif %}<small>размер аудитории</small>{% if map_type == 'presence' %}</a>{% endif %}</div>
+
+    <h4>{% if map_type == 'presence' %}Цифровое присутствие курортов в регионах России{% else %}Рейтинг регионов России по размеру потенциальной аудитории{% endif %}</h4>
+
+    <div id="russian-map"></div>
+    <div id="block-info"></div>
+
+    <div class="container-fluid">
+        <img src="{% static 'img/scale.png' %}" class="scale">
+        <div class="type-legend">
+            <ul>
+                {% for t in TOURISM_TYPES %}
+                   <li><span class="v-icon {{ t.0 }}"></span> {% if map_type == 'presence' and tourism_type != t.0 %}<a href="{% url 'index' tourism_type=t.0 %}">{% else %}<b>{% endif %}{{ t.1 }}{% if map_type == 'presence' and tourism_type != t.0 %}</a>{% else %}</b>{% endif %}</li>
+                {% endfor %}
+            </ul>
+        </div>
+        <p class="annotation" id="annotation">
+            <small><sup class="no-border">*</sup> {% if map_type == 'presence' %}Нормализованная региональная популярность ключевых фраз, связанных с туристическими объектами{% else %}Восстановленное значение объема потенциальной аудитории, интересующейся туризмом{% endif %}</small><br>
+        </p>
+    </div>
+
+    <script type="text/javascript" src="{% static 'js/raphael.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/russian.map.min.js' %}"></script>
+    <script>    window.onload = function() {
+        descrURL = '{% url "target_groups" %}';
+        data = {
+            "viewPort": "-65 0 1134 620",
+            "regions": [
+            {% for r in regions %}
+                {
+                    "attr": {
+                        fill: "{% if map_type == 'presence' %}{{ r.presence_color_code }}{% else %}{{ r.audience_color_code }}{% endif %}",
+                        "stroke-width": 1,
+                        "stroke": "#8eadcc",
+                        opacity: .8},
+                    "id": '{{ r.code }}',
+                    "name": '{{ r.region }}',
+                    "indicator": {% if map_type == 'presence' %}'{{ r.popularity_norm|floatformat:6 }}'{% else %}'{{ r.audience_corr|floatformat:"0" }}'{% endif %},
+                    "sample_volume": {% widthratio r.audience_all r.population 100 %},
+                    "population": '{{ r.population }}',
+                    "travel": {% widthratio r.travel r.audience_distinct_tourists 100 %},
+                    "excursion": {% widthratio r.excursion r.audience_distinct_tourists 100 %},
+                    "extreme": {% widthratio r.extreme r.audience_distinct_tourists 100 %},
+                    "spa": {% widthratio r.spa r.audience_distinct_tourists 100 %},
+                    "outdoor": {% widthratio r.outdoor r.audience_distinct_tourists 100 %},
+                    "paths": {{ r.paths|safe }},
+                    "polygons": {{ r.polygons|safe }}
+                }{% if forloop.counter < regions|length %},{% endif %}
+            {% endfor %}
+        ]};
+
+
+    var tooltip = {
+     bi: $('#block-info'),
+     showInfo: function (htmlText, event) {
+         this.bi.show();
+         var topX = event.clientX + 10;
+         var topY = event.clientY + 10;
+         this.bi.css({top: topY, left: topX});
+         this.bi.html(htmlText);
+     },
+     hideInfo: function () {
+         this.bi.hide();
+         this.bi.html('');
+     },
+     moveInfo: function (event) {
+         var topX = event.clientX + 10;
+         var topY = event.clientY + 10;
+         this.bi.css({top: topY, left: topX});
+     },
+    };
+
+    window.map = new RussianMap({
+     viewPort: data.viewPort,
+     mapId: 'russian-map',
+
+     waitTimer: undefined,
+     width: 780,
+     height: 455,
+     defaultAttr: {
+         stroke: '#ffffff',
+         'stroke-linejoin': 'round',
+         opacity: .8,
+     },
+     mouseMoveAttr: {
+         opacity: 1,
+         cursor: 'pointer'
+     },
+     onMouseMove: function (event) {
+        var htmlText = '<b>' + this.region.name + '</b>' + '<br><span>' + this.region.indicator + '</span><sup class="no-border">*</sup> {% if map_type == 'audience' %} из ' + this.region.population + '{% endif %} <br>{% if map_type == 'audience' %}<span>По выборке: ' + this.region.sample_volume + '%</span><br>{% endif %}<span class="v-icon travel"></span> ' + this.region.travel + '%<br>' +
+				'<span class="v-icon excursion"></span> ' +  this.region.excursion + '%<br>' +
+				'<span class="v-icon extreme"></span> ' +  this.region.extreme + '%<br>' +
+				'<span class="v-icon spa"></span> ' +  this.region.spa + '%<br>' +
+				'<span class="v-icon outdoor"></span> ' +  this.region.outdoor + '%';
+         tooltip.showInfo(htmlText, event);
+     },
+     onMouseMoveInRegion: function (event) {
+         tooltip.moveInfo(event)
+     },
+     onMouseOut: function (event) {
+         tooltip.hideInfo()
+     },
+     onMouseClick: function (event) {
+         location.href = descrURL + this.region.id + '/' + '{{ tourism_type }}' + '/';
+     },
+    }, data.regions);
+};
+</script>
+{% endblock content %}

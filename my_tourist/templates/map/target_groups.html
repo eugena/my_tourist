@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% load static bootstrap4 icons tags %}
+
+{% block meta_title %} Целевые группы{% endblock meta_title %}
+
+{% block content %}
+
+    <h4>{% icon 'users' %} Целевые группы потенциальных клиентов</h4>
+
+    <form action="{% url 'target_groups' %}" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+        <button type="submit" class="btn btn-secondary">
+            {% icon "filter" %} Применить
+        </button>
+        {% endbuttons %}
+    </form>
+    {% for a in audience %}
+        <div class="card target-card">
+            <div class="card-header">
+                <div class="tourism-type"><span class="v-icon {{ a.tourism_type }}"></span></div>
+                <div class="sex-age">
+                <div class="v-icon {% if a.sex == '1' %}fe{% endif%}male"></div>
+                <small><b>{{ a.get_sex_display }}</b></small><br>
+                <small>{{ a.get_age_display }}</small></div>
+            </div>
+            {% if not region %}
+                <div class="card-body">
+                    <b>{{ a.get_code_display }}</b>
+                </div>
+            {% endif %}
+            <div class="card-body type-desc">
+                <span class="card-ratio text-right">
+                    {% comment %}
+                    {{ a.audience_sex_age_interested }} {{ a.audience_all }} {{ regions|get_item:a.id|get_item:'population' }}
+                    {% endcomment %}
+                    {{ regions|get_item:a.id|get_item:'audience_sex_age_interested_corr'|floatformat:"0" }} <a href="#" title="восстановленное число заинтересованных в виде туризма в этой половозрастной группе"><sup>?</sup></a><br>
+                    {% comment %}
+                    {% widthratio a.audience_sex_age_interested a.audience_sex_age 100 %}% <a href="#" title="процент заинтересованных в этом виде туризма в этой половозрастной группе"><sup>?</sup></a>
+                    {% endcomment %}
+                </span>
+                <h6 class="card-title">{{ a.get_tourism_type_display }}</h6>
+                <p class="card-text ">
+                    {% if a.tourism_type == 'travel' %}
+                        Туристские поездки, путешествия по России.
+                    {% elif a.tourism_type == 'excursion' %}
+                        Образовательные, экскурсионные туры по историческим местам и достопримечательностям.
+                    {% elif a.tourism_type == 'extreme' %}
+                        Активный отдых на природе, спортивные мероприятия, соревнования.
+                    {% elif a.tourism_type == 'spa' %}
+                        Косметологические, SPA, оздоравливающие процедуры и уходы.
+                    {% elif a.tourism_type == 'outdoor' %}
+                        Общение, тусовки, знакомства, концерты, встречи.
+                    {% endif %}
+                </p>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">
+                    <div class="v-icon heart"></div>
+                    у <b>{% widthratio a.audience_in_pair_interested a.audience_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
+                    есть пара <a href="#" title="вероятно, будут отдыхать вместе"><sup>?</sup></a>
+                </li>
+                <li class="list-group-item">
+                    <div class="v-icon baby"></div>
+                    у <b>{% widthratio a.audience_sex_age_child_6 a.audience_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
+                    есть дети до 6 лет <a href="#" title="вероятно, заинтересованы в услуге няни"><sup>?</sup></a>
+                </li>
+                <li class="list-group-item">
+                    <div class="v-icon child"></div>
+                    у <b>{% widthratio a.audience_sex_age_child_7_12 a.audience_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
+                    есть дети от 7 до 12 лет <a href="#" title="вероятно, заинтересованы в услуге присмотра за детьми"><sup>?</sup></a>
+                </li>
+                <li class="list-group-item">
+                    <div class="v-icon parents"></div>
+                    <b>{% widthratio a.audience_sex_age_parents a.audience_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
+                    поддерживают отношения с родителями <a href="#" title="вероятно, будут отдыхать с родителями или организуют для них отдых"><sup>?</sup></a>
+                </li>
+                <li class="list-group-item">
+                    <div class="v-icon salary"></div>
+                    <span><b>{{ salary|get_item:a.id|get_item:'s020'|floatformat:0 }}%</b>: &#8381;10-20 тыс.;<br><b>{{ salary|get_item:a.id|get_item:'s2045'|floatformat:0 }}%</b>: &#8381;20-45 тыс.; <b>{{ salary|get_item:a.id|get_item:'s45'|floatformat:0 }}%</b>: &#8381;45+ тыс.</span> <a href="#" title="Ориентировочное распределение уровня зарплаты в этой половозрастной группе, тыс. рублей"><sup>?</sup></a>
+                </li>
+            </ul>
+        </div>
+    {% endfor %}
+    <div class="clearfix"></div>
+
+{% endblock content %}
