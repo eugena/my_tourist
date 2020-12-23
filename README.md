@@ -1,4 +1,4 @@
-![Data Masters. My Tourist](my_tourist/static/img/my-tourist-datamaters-logo.svg)
+![Data Masters. My Tourist](my_tourist/static/img/og/my-tourist-datamaters-logo.svg)
 
 Бесплатный аналитический инструмент на открытых данных для продвижения туристических 
 продуктов для регионов Российской Федерации.

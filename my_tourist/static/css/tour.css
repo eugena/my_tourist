@@ -1,4 +1,5 @@
-/*body{}*/
+html,body{min-width:500px;width:100%;}
+body{display:flex;min-height:100vh;flex-direction:column;}
 h4{color:#0e3e7e;margin-bottom:20px}
 a{color:#0d3e7e;}
 a:hover{text-decoration:none!important;}
@@ -8,9 +9,11 @@ a:hover{text-decoration:none!important;}
 .nav-item.active .nav-link{font-weight:700}
 .navbar .nav-link{color:#0e3e7e;font-size:0.9rem}
 .navbar .navbar-brand{margin-left:110px;color:#0e3e7e;font-weight:700;font-size:0.9rem}
+.navbar-nav :first-child a{margin-top:0}
+.navbar-nav :first-child span{display:inline-block;margin-top:0}
 sup{border: 1px dotted #ccc;padding:0 3px}
 sup.no-border{border:none;padding:0}
-.content{padding:30px 20px;color:#495c71;min-height:690px}
+.content{padding:30px 20px;color:#495c71;flex:1;}
 .content .map{margin:auto}
 .content ul a, .switcher a, p a{text-decoration:none;border-bottom:1px dotted}
 .content a[href="#"]{text-decoration:none}
@@ -72,5 +75,11 @@ sup.no-border{border:none;padding:0}
 }
 @media only screen and (max-width:450px) {
     .navbar-brand{font-size:small}
-    .badges{float:none}
+}
+@media only screen and (max-width:563px) {
+    .badges{float:none;display:inline-block;width:100%;}
+}
+@media only screen and (max-width:990px) {
+    .navbar-nav :first-child a{margin-top:20px;}
+    .navbar-nav :first-child span{display:inline-block;margin-top:20px;}
 }
