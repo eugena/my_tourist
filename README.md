@@ -7,8 +7,13 @@
 на конкурсе [Цифровых Решений для регионов](https://datamasters.ru/contest)
 (сейчас [World AI&Data Сhallenge](https://datamasters.ru/aianddata)) и стал победителем в 2019 году.
 
+---
+Ранее проект поддерживался на: https://git.asi.ru/eugena.mihailikova/iskra_two.
+
+
 Мой турист
 ==========
 [![License: GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](LICENSE)
 [![Pre Commit: enabled](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
