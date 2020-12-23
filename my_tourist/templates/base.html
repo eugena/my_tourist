@@ -1,0 +1,59 @@
+{% load static bootstrap4 icons %}
+
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Мой турист. {% block meta_title %}{% endblock meta_title %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% bootstrap_css %}
+    {% bootstrap_javascript jquery='full' %}
+    <link href="{% static 'css/tour.css' %}" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
+    <link rel="icon" href="{% static 'img/favicons/favicon.ico' %}" type="image/x-icon">
+    <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}"  type="image/x-icon">
+    {% block head %}{% endblock head %}
+</head>
+<body>
+<a target="_blank" href="https://datamasters.ru/"><img alt="World AI & Data Challenge" src="{% static 'img/datamasters-logo.svg' %}" class="datamasters-logo"></a>
+{% if request.user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg">
+        {% with url=request.resolver_match.url_name %}
+            {% if url != 'index' %}<a class="navbar-brand" href="{% url 'index' %}">{% else %}<span class="navbar-brand">{% endif %}Мой турист. {{ REGION }}{% if url != 'index' %}</a>{% else %}</span>{% endif %}
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item{% if url == 'index' %} active{% endif %}">{% if url != 'index' %}<a class="nav-link" href="{% url 'index' %}">{% else %}<span class="nav-link">{% endif %}{% icon 'map-marker' %} Карты{% if url != 'index' %}</a>{% else %}</span>{% endif %}</li>
+                    <li class="nav-item{% if url == 'target_groups' %} active{% endif %}">{% if url != 'target_groups' %}<a class="nav-link" href="{% url 'target_groups' %}">{% else %}<span class="nav-link">{% endif %}{% icon 'users' %} Группы{% if url != 'target_groups' %}</a>{% else %}</span>{% endif %}</li>
+                    <li class="nav-item{% if url == 'analytics' %} active{% endif %}">{% if url != 'analytics' %}<a class="nav-link" href="{% url 'analytics' %}">{% else %}<span class="nav-link">{% endif %}{% icon 'bar-chart-o' %} Аналитика{% if url != 'analytics' %}</a>{% else %}</span>{% endif %}</li>
+                    <li class="nav-item{% if url == 'conf' %} active{% endif %}">{% if url != 'conf' %}<a class="nav-link" href="{% url 'conf' %}">{% else %}<span class="nav-link">{% endif %}{% icon 'gears' %} Настройки{% if url != 'conf' %}</a>{% else %}</span>{% endif %}</li>
+                    <li class="nav-item{% if url == 'help' %} active{% endif %}">{% if url != 'help' %}<a class="nav-link" href="{% url 'help' %}">{% else %}<span class="nav-link">{% endif %}{% icon 'question-circle' %} Справка{% if url != 'help' %}</a>{% else %}</span>{% endif %}</li>
+                    <li class="nav-item{% if url == 'logout' %} active{% endif %}">{% if url != 'logout' %}<a class="nav-link" href="{% url 'logout' %}">{% else %}<span class="nav-link">{% endif %}{% icon 'sign-out' %} Выход{% if url != 'logout' %}</a>{% else %}</span>{% endif %}</li>
+                </ul>
+            </div>
+        {% endwith %}
+    </nav>
+{% endif %}
+<div class="container-fluid clearfix content">
+    {% block content %}{% endblock content %}
+</div>
+<footer class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-md">
+          <small class="mb-3 text-muted">© «Мой турист» 2019-{% now "Y" %}</small>
+            <small class="mb-3 text-muted badges">
+                <a target="_blank" href="https://metrika.yandex.ru/dashboard?id=70733248"><img alt="Yandex.Metrika" src="https://img.shields.io/badge/Yandex-Metrika-yellow.svg"></a>
+                <img alt="Version" src="https://img.shields.io/badge/version-0.5.0-blue.svg">
+                <a  target="_blank" href="https://github.com/eugena/my_tourist"><img alt="Open Source Love" src="https://img.shields.io/badge/github-repo-red.svg?logo=github&logoColor=white"></a>
+            </small>
+        </div>
+        </div>
+</footer>
+{% block js %}
+<script type="text/javascript" >(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(70733248, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/70733248" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+{% endblock js %}
+</body>

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load static icons %}
+
+{% block meta_title %}Вход на сайт{% endblock meta_title %}
+
+{% block content %}
+<div class="container centered-block-container">
+    <div class="login-block">
+        <a href="{% url 'index' %}"><h1 class="text-center">{% icon 'compass' %} Мой турист</h1></a>
+        <p class="text-center">
+            Во время авторизации произошла ошибка. {{ error_description }}
+        </p>
+    </div>
+</div>
+{% endblock content %}

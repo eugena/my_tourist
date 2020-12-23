@@ -1,0 +1,1 @@
+<script>$('select[name$="tourism_type"]').change(function() {location.href = '{% url request.resolver_match.url_name %}' + $(this).val() + '/'});</script>

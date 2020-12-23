@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% load static bootstrap4 icons %}
+
+{% block meta_title %}Настройки{% endblock meta_title %}
+
+{% block content %}
+
+    <h4>{% icon 'gears' %} Настройки</h4>
+    {% bootstrap_messages %}
+    <form action="" method="post" class="form">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% buttons %}
+        <button type="submit" class="btn btn-secondary">
+            {% icon "save" %}  Сохранить
+        </button>
+        {% endbuttons %}
+
+    </form>
+{% endblock content %}
+
+{% block js %}
+    {% include 'include/reload_after_type_changing.html'%}
+{% endblock js %}
