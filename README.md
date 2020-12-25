@@ -17,4 +17,3 @@
 [![Pre Commit: enabled](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Requirements Status](https://requires.io/github/eugena/my_tourist/requirements.svg?branch=master)](https://requires.io/github/eugena/my_tourist/requirements/?branch=master)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
-
