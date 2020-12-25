@@ -87,3 +87,16 @@
     <div class="clearfix"></div>
 
 {% endblock content %}
+{% block js %}
+  {{ block.super }}
+  <script type="text/javascript" src="{% static 'js/select2.min.js' %}"></script>
+  <script type="text/javascript">
+    $().ready(function(){
+      $('select[name="region"]').select2({width:'100%',language:{"noResults":function(){return "Регион не найден";}},});
+      $('select[name="tourism_type"]').select2({width:'100%',language:{"noResults":function(){return "Вид туризма не найден";}},});
+      $('select[name="sex"]').select2({width:'100%',language:{"noResults":function(){return "Пол не найден";}},});
+      $('select[name="age"]').select2({width:'100%',language:{"noResults":function(){return "Возраст не найден";}},})
+    });
+  </script>
+{% endblock js %}
+

@@ -11,15 +11,20 @@
     <form action="" method="post" class="form">
         {% csrf_token %}
         {% bootstrap_form form %}
-        {% buttons %}
-        <button type="submit" class="btn btn-secondary">
-            {% icon "save" %}  Сохранить
-        </button>
-        {% endbuttons %}
-
+        {% if not form.fields.phrases.widget.attrs.readonly %}
+          {% buttons %}
+          <button type="submit" class="btn btn-secondary">
+              {% icon "save" %}  Сохранить
+          </button>
+          {% endbuttons %}
+        {% endif %}
     </form>
 {% endblock content %}
 
 {% block js %}
+    {{ block.super }}
+    <script type="text/javascript" src="{% static 'js/select2.min.js' %}"></script>
+    <script type="text/javascript">$().ready(function(){$('select[name="tourism_type"]').select2({width:'100%',language:{"noResults":function(){return "Вид туризма не найден";}},});});</script>
     {% include 'include/reload_after_type_changing.html'%}
 {% endblock js %}
+

@@ -7,8 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     {% bootstrap_css %}
     {% bootstrap_javascript jquery='full' %}
+    <link rel="stylesheet" href="{% static 'css/select2.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">    <link href="{% static 'css/tour.css' %}" rel="stylesheet">
     <link href="{% static 'css/tour.css' %}" rel="stylesheet">
-    <link rel="stylesheet" href="{% static 'css/font-awesome.min.css' %}">
     <link rel="icon" href="{% static 'img/favicons/favicon.ico' %}" type="image/x-icon">
     <link rel="shortcut icon" href="{% static 'img/favicons/favicon.ico' %}"  type="image/x-icon">
     {% block head %}{% endblock head %}
@@ -18,7 +19,13 @@
 {% if request.user.is_authenticated %}
     <nav class="navbar navbar-expand-lg">
         {% with url=request.resolver_match.url_name %}
-            {% if url != 'index' %}<a class="navbar-brand" href="{% url 'index' %}">{% else %}<span class="navbar-brand">{% endif %}Мой турист. {{ REGION }}{% if url != 'index' %}</a>{% else %}</span>{% endif %}
+            <span class="navbar-brand">{% if url != 'index' %}<a href="{% url 'index' %}">{% endif %}Мой турист{% if url != 'index' %}</a>{% endif %}
+            <select name="global_region">
+              {% for region in REGIONS %}
+                  <option value="{{ region.code }}"{% if region.code == GLOBAL_CODE %} selected="selected"{% endif %}>{{ region.title }}</option>
+              {% endfor %}
+            </select>
+            </span>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -52,6 +59,9 @@
     </div>
 </footer>
 {% block js %}
-<script type="text/javascript" >(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(70733248, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/70733248" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+  {% include 'include/reload_after_region_changing.html'%}
+  <script type="text/javascript" src="{% static 'js/select2.min.js' %}"></script>
+  <script type="text/javascript">$().ready(function(){$('select[name="global_region"]').select2({width:'220px',language:{"noResults":function(){return "Регион не найден";}},});});</script>
+  <script type="text/javascript">(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");ym(70733248, "init", {clickmap:true,trackLinks:true,accurateTrackBounce:true});</script><noscript><div><img src="https://mc.yandex.ru/watch/70733248" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
 {% endblock js %}
 </body>

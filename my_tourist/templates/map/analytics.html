@@ -75,5 +75,6 @@
 {% endblock content %}
 
 {% block js %}
+    {{ block.super }}
     {% include 'include/reload_after_type_changing.html'%}
 {% endblock js %}
