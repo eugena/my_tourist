@@ -13,14 +13,14 @@ pytest-sugar==0.9.4  # https://github.com/Frozenball/pytest-sugar
 
 # Documentation
 # ------------------------------------------------------------------------------
-sphinx==3.3.1  # https://github.com/sphinx-doc/sphinx
+sphinx==3.4.1  # https://github.com/sphinx-doc/sphinx
 sphinx-autobuild==2020.9.1 # https://github.com/GaretJax/sphinx-autobuild
 
 # Code quality
 # ------------------------------------------------------------------------------
 flake8==3.8.4  # https://github.com/PyCQA/flake8
 flake8-isort==4.0.0  # https://github.com/gforcada/flake8-isort
-coverage==5.3  # https://github.com/nedbat/coveragepy
+coverage==5.3.1  # https://github.com/nedbat/coveragepy
 black==20.8b1  # https://github.com/ambv/black
 pylint-django==2.3.0  # https://github.com/PyCQA/pylint-django
 pre-commit==2.9.3  # https://github.com/pre-commit/pre-commit
