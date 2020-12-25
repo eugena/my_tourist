@@ -17,3 +17,5 @@
 [![Pre Commit: enabled](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Requirements Status](https://requires.io/github/eugena/my_tourist/requirements.svg?branch=master)](https://requires.io/github/eugena/my_tourist/requirements/?branch=master)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
+
+«Мой турист» — веб-приложение на Django, чрезвычайно популярном и полнофункциональном веб-фреймворке, написанном на Python. Таким образом, продукт обладает всеми преимуществами приложений, использующих Django: несложное развертывание и поддержка, безопасность и масштабируемость.
