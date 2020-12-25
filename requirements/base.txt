@@ -1,4 +1,4 @@
-pytz==2020.4  # https://github.com/stub42/pytz
+pytz==2020.5  # https://github.com/stub42/pytz
 python-slugify==4.0.1  # https://github.com/un33k/python-slugify
 Pillow==8.0.1  # https://github.com/python-pillow/Pillow
 rcssmin==1.0.6  # https://github.com/ndparker/rcssmin
@@ -9,7 +9,7 @@ hiredis==1.1.0  # https://github.com/redis/hiredis-py
 
 # Django
 # ------------------------------------------------------------------------------
-django==3.0.11  # pyup: < 3.1  # https://www.djangoproject.com/
+django==3.1.4  # pyup: < 3.1  # https://www.djangoproject.com/
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-model-utils==4.1.1  # https://github.com/jazzband/django-model-utils
 django-allauth==0.44.0  # https://github.com/pennersr/django-allauth
