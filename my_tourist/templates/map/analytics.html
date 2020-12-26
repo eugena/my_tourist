@@ -34,11 +34,11 @@
             <th scope="col" class="text-center">
                 {% if sort_by != 'audience_corr' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='audience_tourism_type_corr' %}">{% endif %}
                 {% icon 'sort-amount-desc' %} {{ tourism_type_title }}
-                {% if sort_by != 'audience_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся категорией «{{ tourism_type_title }}»"><sup>?</sup></a>
+                {% if sort_by != 'audience_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся видом «{{ tourism_type_title }}»"><sup>?</sup></a>
             </th>
             <th scope="col" class="text-center">
                 {% if sort_by != 'audience_corr' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='audience_corr' %}">{% endif %}
-                {% icon 'sort-amount-desc' %} Все категории
+                {% icon 'sort-amount-desc' %} Все виды
                 {% if sort_by != 'audience_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся туризмом по данным сети ВК"><sup>?</sup></a>
             </th>
             <th scope="col" class="text-center">
@@ -48,26 +48,26 @@
             </th>
         </tr>
         </thead>
-        {% for t in regions %}
+        {% for r in regions %}
             <tr>
                 <td>{{ forloop.counter }}</td>
-                <td class="text-center">{{ t.code }}</td>
-                <td>{{ t.region }}</td>
+                <td class="text-center">{{ r.code }}</td>
+                <td>{{ r.region }}</td>
                 <td class="text-center">
-                    {{ t.popularity_norm|floatformat:6 }}
+                    {{ r.popularity_norm|floatformat:6 }}
                 </td>
                 <td class="text-center">
-                    {% if t.popularity_norm_delta < 0 %}
-                    <span class="text-danger">{% icon 'arrow-down' %} {{ t.popularity_norm_delta|floatformat:6  }}</span>
-                    {% elif t.popularity_norm_delta > 0 %}
-                    <span class="text-success">{% icon 'arrow-up' %} {{ t.popularity_norm_delta|floatformat:6  }}</span>
+                    {% if r.popularity_norm_delta < 0 %}
+                    <span class="text-danger">{% icon 'arrow-down' %} {{ r.popularity_norm_delta|floatformat:6  }}</span>
+                    {% elif r.popularity_norm_delta > 0 %}
+                    <span class="text-success">{% icon 'arrow-up' %} {{ r.popularity_norm_delta|floatformat:6  }}</span>
                     {% else %}
                     <span class="text-muted">{{ 0|floatformat:6  }}</span>
                     {% endif %}
                 </td>
-                <td class="text-right">{{ t.audience_tourism_type_corr|floatformat:0 }}</td>
-                <td class="text-right">{{ t.audience_corr|floatformat:0 }}</td>
-                <td class="text-right">{{ t.population }}</td>
+                <td class="text-right">{{ r.audience_tourism_type_corr|floatformat:0 }}</td>
+                <td class="text-right">{{ r.audience_corr|floatformat:0 }}</td>
+                <td class="text-right">{{ r.population }}</td>
             </tr>
         {% endfor %}
     </table>

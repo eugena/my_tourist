@@ -57,60 +57,60 @@
         ]};
 
 
-    var tooltip = {
-     bi: $('#block-info'),
-     showInfo: function (htmlText, event) {
-         this.bi.show();
-         var topX = event.clientX + 10;
-         var topY = event.clientY + 10;
-         this.bi.css({top: topY, left: topX});
-         this.bi.html(htmlText);
-     },
-     hideInfo: function () {
-         this.bi.hide();
-         this.bi.html('');
-     },
-     moveInfo: function (event) {
-         var topX = event.clientX + 10;
-         var topY = event.clientY + 10;
-         this.bi.css({top: topY, left: topX});
-     },
+        let tooltip = {
+         bi: $('#block-info'),
+         showInfo: function (htmlText, event) {
+             this.bi.show();
+             let topX = event.clientX + 10;
+             let topY = event.clientY + 10;
+             this.bi.css({top: topY, left: topX});
+             this.bi.html(htmlText);
+         },
+         hideInfo: function () {
+             this.bi.hide();
+             this.bi.html('');
+         },
+         moveInfo: function (event) {
+             let topX = event.clientX + 10;
+             let topY = event.clientY + 10;
+             this.bi.css({top: topY, left: topX});
+         },
+        };
+
+        window.map = new RussianMap({
+         viewPort: data.viewPort,
+         mapId: 'russian-map',
+
+         waitTimer: undefined,
+         width: 780,
+         height: 455,
+         defaultAttr: {
+             stroke: '#ffffff',
+             'stroke-linejoin': 'round',
+             opacity: .8,
+         },
+         mouseMoveAttr: {
+             opacity: 1,
+             cursor: 'pointer'
+         },
+         onMouseMove: function (event) {
+            let htmlText = '<b>' + this.region.name + '</b>' + '<br><span>' + this.region.indicator + '</span><sup class="no-border">*</sup> {% if map_type == 'audience' %} из ' + this.region.population + '{% endif %} <br>{% if map_type == 'audience' %}<span>По выборке: ' + this.region.sample_volume + '%</span><br>{% endif %}<span class="v-icon travel"></span> ' + this.region.travel + '%<br>' +
+            '<span class="v-icon excursion"></span> ' +  this.region.excursion + '%<br>' +
+            '<span class="v-icon extreme"></span> ' +  this.region.extreme + '%<br>' +
+            '<span class="v-icon spa"></span> ' +  this.region.spa + '%<br>' +
+            '<span class="v-icon outdoor"></span> ' +  this.region.outdoor + '%';
+             tooltip.showInfo(htmlText, event);
+         },
+         onMouseMoveInRegion: function (event) {
+             tooltip.moveInfo(event)
+         },
+         onMouseOut: function (event) {
+             tooltip.hideInfo()
+         },
+         onMouseClick: function (event) {
+             location.href = descrURL + this.region.id + '/' + '{{ tourism_type }}' + '/';
+         },
+        }, data.regions);
     };
-
-    window.map = new RussianMap({
-     viewPort: data.viewPort,
-     mapId: 'russian-map',
-
-     waitTimer: undefined,
-     width: 780,
-     height: 455,
-     defaultAttr: {
-         stroke: '#ffffff',
-         'stroke-linejoin': 'round',
-         opacity: .8,
-     },
-     mouseMoveAttr: {
-         opacity: 1,
-         cursor: 'pointer'
-     },
-     onMouseMove: function (event) {
-        var htmlText = '<b>' + this.region.name + '</b>' + '<br><span>' + this.region.indicator + '</span><sup class="no-border">*</sup> {% if map_type == 'audience' %} из ' + this.region.population + '{% endif %} <br>{% if map_type == 'audience' %}<span>По выборке: ' + this.region.sample_volume + '%</span><br>{% endif %}<span class="v-icon travel"></span> ' + this.region.travel + '%<br>' +
-				'<span class="v-icon excursion"></span> ' +  this.region.excursion + '%<br>' +
-				'<span class="v-icon extreme"></span> ' +  this.region.extreme + '%<br>' +
-				'<span class="v-icon spa"></span> ' +  this.region.spa + '%<br>' +
-				'<span class="v-icon outdoor"></span> ' +  this.region.outdoor + '%';
-         tooltip.showInfo(htmlText, event);
-     },
-     onMouseMoveInRegion: function (event) {
-         tooltip.moveInfo(event)
-     },
-     onMouseOut: function (event) {
-         tooltip.hideInfo()
-     },
-     onMouseClick: function (event) {
-         location.href = descrURL + this.region.id + '/' + '{{ tourism_type }}' + '/';
-     },
-    }, data.regions);
-};
-</script>
+    </script>
 {% endblock content %}
