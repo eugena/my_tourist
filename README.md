@@ -19,7 +19,7 @@
 [![Requirements Status](https://requires.io/github/eugena/my_tourist/requirements.svg?branch=master)](https://requires.io/github/eugena/my_tourist/requirements/?branch=master)
 [![Black code style](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/ambv/black)
 
-«Мой турист» — веб-приложение на Django, популярном веб-фреймворке, написанном на Python. Таким образом, продукт обладает всеми преимуществами приложений, использующих Django: несложное развертывание и поддержка, безопасность и масштабируемость.
+«Мой турист» — веб-приложение на Django, популярном веб-фреймворке, написанном на Python. Поэтому, продукт обладает всеми преимуществами приложений, использующих Django: несложное развертывание и поддержка, безопасность и масштабируемость.
 
 
 История изменений
