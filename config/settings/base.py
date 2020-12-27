@@ -263,6 +263,9 @@ LOGGING = {
 }
 
 # Application
+
+USE_REMOTE_WEB_DRIVER = True
+
 TOURISM_TYPES = (
     ("travel", "Путешествия"),
     ("excursion", "Экскурсии"),

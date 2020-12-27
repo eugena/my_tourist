@@ -19,7 +19,7 @@ class SettingsUpdate(UpdateView):
         "phrases",
     ]
 
-    template_name = "conf/conf.html"
+    template_name = "conf/map_conf.html"
 
     def get_form(self, form_class=None):
         form = super().get_form()
@@ -44,7 +44,7 @@ class SettingsUpdate(UpdateView):
 
     def get_success_url(self):
         return reverse_lazy(
-            "conf",
+            "map_conf",
             kwargs={
                 "tourism_type": self.kwargs.get(
                     "tourism_type", settings.TOURISM_TYPE_DEFAULT
