@@ -241,6 +241,8 @@ ADMIN_URL = "admin/"
 ADMINS = [("""Eugena A. Mikhaylikova""", "eugena.mihailikkova@gmail.com")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
+# Django Admin Title
+ADMIN_TITLE = "«Мой турист»"
 
 #
 # # django-compressor

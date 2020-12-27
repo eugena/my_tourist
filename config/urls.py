@@ -4,6 +4,9 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views import defaults as default_views
 
+admin.site.site_header = settings.ADMIN_TITLE
+admin.site.site_title = settings.ADMIN_TITLE
+
 urlpatterns = [
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
