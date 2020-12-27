@@ -4,7 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 
 from my_tourist.conf.models import AppSettings
-from my_tourist.map.models import RegionResponsible
+from my_tourist.map.models import Region, RegionResponsible
 from my_tourist.utils.region import get_global_code, global_region_cookie
 
 
@@ -38,7 +38,7 @@ class SettingsUpdate(UpdateView):
 
     def get_object(self, queryset=None):
         return AppSettings.objects.get_or_create(
-            global_code=get_global_code(self.request),
+            global_code=Region.objects.get(pk=get_global_code(self.request)),
             tourism_type=self.kwargs.get("tourism_type", settings.TOURISM_TYPE_DEFAULT),
         )[0]
 

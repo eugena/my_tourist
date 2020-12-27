@@ -7,6 +7,11 @@ from my_tourist.users.models import User
 
 
 class ConfTest(test.TestCase):
+
+    fixtures = [
+        "my_tourist/map/fixtures/region.yaml",
+    ]
+
     def setUp(self):
         self.credentials = {"username": "testuser", "password": "secret"}
         User.objects.create_user(**self.credentials)
@@ -16,19 +21,19 @@ class ConfTest(test.TestCase):
         Testing of the phrases configuration form
         :return: None
         """
-        response = self.client.get(reverse("conf"))
+        response = self.client.get(reverse("map_conf"))
         self.assertEqual(response.status_code, 302)
 
         self.client.login(**self.credentials)
 
-        response = self.client.get(reverse("conf"))
+        response = self.client.get(reverse("map_conf"))
         self.assertEqual(response.status_code, 200)
 
         tourism_type = "spa"
         phrases = "spa цены"
 
         response = self.client.post(
-            reverse("conf"), {"tourism_type": tourism_type, "phrases": phrases}
+            reverse("map_conf"), {"tourism_type": tourism_type, "phrases": phrases}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
@@ -39,7 +44,7 @@ class ConfTest(test.TestCase):
         )
 
         response = self.client.get(
-            reverse("conf", kwargs={"tourism_type": tourism_type})
+            reverse("map_conf", kwargs={"tourism_type": tourism_type})
         )
         self.assertEqual(response.status_code, 200)
 
