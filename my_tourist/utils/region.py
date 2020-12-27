@@ -15,8 +15,6 @@ def get_global_code(request):
     """
     global_region = request.COOKIES.get("global_region")
 
-    ip, _ = get_client_ip(request)
-
     if global_region is None:
         ip, _ = get_client_ip(request)
         geo_bases = IPGeoBase.objects.by_ip(ip)
