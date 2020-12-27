@@ -22,6 +22,6 @@ django-bootstrap4==2.3.1
 django-ipware==3.0.2
 
 environ==1.0
-tqdm==4.54.1
+tqdm==4.55.0
 selenium==3.141.0
 matplotlib==3.3.3
