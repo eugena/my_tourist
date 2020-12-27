@@ -7,22 +7,25 @@ from ipware import get_client_ip
 from my_tourist.map.models import Region
 
 
-def get_global_code(request):
+def get_global_code(request=None):
     """
     Returns global region code
 
     :return: str
     """
-    global_region = request.COOKIES.get("global_region")
+    global_region = None
 
-    if global_region is None:
-        ip, _ = get_client_ip(request)
-        geo_bases = IPGeoBase.objects.by_ip(ip)
-        if geo_bases.exists():
-            geo_base = geo_bases[0]
-            region = Region.objects.filter(region=geo_base.region).first()
-            if isinstance(region, Region):
-                global_region = region.code
+    if request is not None:
+        global_region = request.COOKIES.get("global_region")
+
+        if global_region is None:
+            ip, _ = get_client_ip(request)
+            geo_bases = IPGeoBase.objects.by_ip(ip)
+            if geo_bases.exists():
+                geo_base = geo_bases[0]
+                region = Region.objects.filter(region=geo_base.region).first()
+                if isinstance(region, Region):
+                    global_region = region.code
 
     if global_region is None:
         global_region = settings.GLOBAL_CODE
