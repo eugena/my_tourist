@@ -237,9 +237,6 @@ class Audience(TimeStampedModel):
     )
     v_all = models.IntegerField("Общее число по региону", default=0)
     v_types = models.IntegerField("Общее число заинтересованных в туризме", default=0)
-    # v_type = models.IntegerField(
-    #     "Заинтересованные разбивка: вид туризма",
-    #     default=0)
     v_type_sex_age = models.IntegerField(
         "Заинтересованные, разбивка: вид туризма, пол, возраст", default=0
     )
