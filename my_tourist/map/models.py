@@ -183,7 +183,6 @@ class HeatMap(TimeStampedModel):
         )
         verbose_name = "Данные тепловой карты"
         verbose_name_plural = "Данные тепловой карты"
-        select_on_save = True
 
 
 class Salary(TimeStampedModel):
