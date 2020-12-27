@@ -32,14 +32,14 @@
                 {% if sort_by != 'popularity_norm_delta' %}</a>{% endif %} <a href="#" title="Изменение региональной популярности c {{ prev_date|date:"SHORT_DATE_FORMAT" }} по данным Яндекс.Подбор слов"><sup>?</sup></a>
             </th>
             <th scope="col" class="text-center">
-                {% if sort_by != 'audience_corr' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='audience_tourism_type_corr' %}">{% endif %}
+                {% if sort_by != 'audience_type_corr' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='audience_type_corr' %}">{% endif %}
                 {% icon 'sort-amount-desc' %} {{ tourism_type_title }}
-                {% if sort_by != 'audience_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся видом «{{ tourism_type_title }}»"><sup>?</sup></a>
+                {% if sort_by != 'audience_type_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся видом «{{ tourism_type_title }}»"><sup>?</sup></a>
             </th>
             <th scope="col" class="text-center">
-                {% if sort_by != 'audience_corr' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='audience_corr' %}">{% endif %}
+                {% if sort_by != 'audience_types_corr' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='audience_types_corr' %}">{% endif %}
                 {% icon 'sort-amount-desc' %} Все виды
-                {% if sort_by != 'audience_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся туризмом по данным сети ВК"><sup>?</sup></a>
+                {% if sort_by != 'audience_types_corr' %}</a>{% endif %} <a href="#" title="Восстановленный объем потенциальной аудитории, интересующейся туризмом по данным сети ВК"><sup>?</sup></a>
             </th>
             <th scope="col" class="text-center">
                 {% if sort_by != 'population' %}<a href="{% url 'analytics' tourism_type=tourism_type sort_by='population' %}">{% endif %}
@@ -65,8 +65,8 @@
                     <span class="text-muted">{{ 0|floatformat:6  }}</span>
                     {% endif %}
                 </td>
-                <td class="text-right">{{ r.audience_tourism_type_corr|floatformat:0 }}</td>
-                <td class="text-right">{{ r.audience_corr|floatformat:0 }}</td>
+                <td class="text-right">{{ r.audience_type_corr|floatformat:0 }}</td>
+                <td class="text-right">{{ r.audience_types_corr|floatformat:0 }}</td>
                 <td class="text-right">{{ r.population }}</td>
             </tr>
         {% endfor %}

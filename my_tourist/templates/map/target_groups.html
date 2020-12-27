@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% load static bootstrap4 icons tags %}
+{% load static bootstrap4 icons %}
 
 {% block meta_title %} Целевые группы{% endblock meta_title %}
 
@@ -33,9 +33,9 @@
             {% endif %}
             <div class="card-body type-desc">
                 <span class="card-ratio text-right">
-                  {% widthratio a.audience_sex_age_interested 1 a.code.population as f %}
-                  {% widthratio f a.audience_all 1 as audience_sex_age_interested_corr %}
-                  {{ audience_sex_age_interested_corr|floatformat:"0" }}
+                  {% widthratio a.v_type_sex_age 1 a.code.population as f %}
+                  {% widthratio f a.v_all 1 as v_type_sex_age_corr %}
+                  {{ v_type_sex_age_corr|floatformat:"0" }}
                   <a href="#" title="восстановленное число заинтересованных в виде туризма в этой половозрастной группе"><sup>?</sup></a><br>
                 </span>
                 <h6 class="card-title">{{ a.get_tourism_type_display }}</h6>
@@ -56,27 +56,27 @@
             <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="v-icon heart"></div>
-                    у <b>{% widthratio a.audience_in_pair_interested a.audience_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
+                    у <b>{% widthratio a.v_type_in_pair a.v_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
                     есть пара <a href="#" title="вероятно, будут отдыхать вместе"><sup>?</sup></a>
                 </li>
                 <li class="list-group-item">
                     <div class="v-icon baby"></div>
-                    у <b>{% widthratio a.audience_sex_age_child_6 a.audience_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
+                    у <b>{% widthratio a.v_sex_age_child_6 a.v_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
                     есть дети до 6 лет <a href="#" title="вероятно, заинтересованы в услуге няни"><sup>?</sup></a>
                 </li>
                 <li class="list-group-item">
                     <div class="v-icon child"></div>
-                    у <b>{% widthratio a.audience_sex_age_child_7_12 a.audience_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
+                    у <b>{% widthratio a.v_sex_age_child_7_12 a.v_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
                     есть дети от 7 до 12 лет <a href="#" title="вероятно, заинтересованы в услуге присмотра за детьми"><sup>?</sup></a>
                 </li>
                 <li class="list-group-item">
                     <div class="v-icon parents"></div>
-                    <b>{% widthratio a.audience_sex_age_parents a.audience_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
+                    <b>{% widthratio a.v_sex_age_parents a.v_sex_age 100 %}%</b> <a href="#" title="в этой половозрастной группе"><sup>?</sup></a>
                     поддерживают отношения с родителями <a href="#" title="вероятно, будут отдыхать с родителями или организуют для них отдых"><sup>?</sup></a>
                 </li>
                 <li class="list-group-item">
                     <div class="v-icon salary"></div>
-                    <span><b>{% widthratio a.s020 1 100 %}%</b>: &#8381;10-20 тыс.;<br><b>{% widthratio a.s2045 1 100 %}%</b>: &#8381;20-45 тыс.; <b>{% widthratio a.s45 1 100 %}%</b>: &#8381;45+ тыс.</span> <a href="#" title="Ориентировочное распределение уровня зарплаты в этой половозрастной группе, тыс. рублей"><sup>?</sup></a>
+                    <span><b>{% widthratio a.s020 1 100 %}%</b>: ₽10-20 тыс.;<br><b>{% widthratio a.s2045 1 100 %}%</b>: ₽20-45 тыс.; <b>{% widthratio a.s45 1 100 %}%</b>: ₽45+ тыс.</span> <a href="#" title="Ориентировочное распределение уровня зарплаты в этой половозрастной группе, тыс. рублей"><sup>?</sup></a>
                 </li>
 
 
