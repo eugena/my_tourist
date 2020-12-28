@@ -66,6 +66,20 @@ Running tests with py.test
 
   $ pytest
 
+Pre-commit
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Installation:
+::
+
+  $ pre-commit install
+
+
+Checking project files:
+::
+
+  $ pre-commit run --all-files
+
 Live reloading and Sass CSS compilation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
