@@ -1,6 +1,22 @@
 Changelog
 =========
 
+0.5.0 /
+==================
+
+  * Python version to 3.8
+  * db to PostgreSQL
+  * db refactoring
+  * application refactoring
+  * containers architecture and compose
+  * code control
+  * requirements control
+  * pandas dropped from requirements
+  * settings editing permissions
+  * user interface improvement
+  * region choosing from the interface
+  * region definition by IP
+
 0.4.0 / 2020-12-23
 ==================
 
