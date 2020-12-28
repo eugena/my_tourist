@@ -78,13 +78,6 @@
                     <div class="v-icon salary"></div>
                     <span><b>{% widthratio a.s020 1 100 %}%</b>: ₽10-20 тыс.;<br><b>{% widthratio a.s2045 1 100 %}%</b>: ₽20-45 тыс.; <b>{% widthratio a.s45 1 100 %}%</b>: ₽45+ тыс.</span> <a href="#" title="Ориентировочное распределение уровня зарплаты в этой половозрастной группе, тыс. рублей"><sup>?</sup></a>
                 </li>
-
-
-
-{#                <li class="list-group-item">#}
-{#                    <div class="v-icon salary"></div>#}
-{#                    <span><b>{{ salary|get_item:a.id|get_item:'s020'|floatformat:0 }}%</b>: &#8381;10-20 тыс.;<br><b>{{ salary|get_item:a.id|get_item:'s2045'|floatformat:0 }}%</b>: &#8381;20-45 тыс.; <b>{{ salary|get_item:a.id|get_item:'s45'|floatformat:0 }}%</b>: &#8381;45+ тыс.</span> <a href="#" title="Ориентировочное распределение уровня зарплаты в этой половозрастной группе, тыс. рублей"><sup>?</sup></a>#}
-{#                </li>#}
             </ul>
         </div>
     {% endfor %}
@@ -96,7 +89,7 @@
   <script type="text/javascript" src="{% static 'js/select2.min.js' %}"></script>
   <script type="text/javascript">
     $().ready(function(){
-      $('select[name="region"]').select2({width:'100%',language:{"noResults":function(){return "Регион не найден";}},});
+      $('select[name="code"]').select2({width:'100%',language:{"noResults":function(){return "Регион не найден";}},});
       $('select[name="tourism_type"]').select2({width:'100%',language:{"noResults":function(){return "Вид туризма не найден";}},});
       $('select[name="sex"]').select2({width:'100%',language:{"noResults":function(){return "Пол не найден";}},});
       $('select[name="age"]').select2({width:'100%',language:{"noResults":function(){return "Возраст не найден";}},})

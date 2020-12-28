@@ -21,31 +21,27 @@ class Round(Func):
     template = "%(function)s(CAST(%(expressions)s AS NUMERIC), 2)"
 
 
-class TargetGroupFilterForm(forms.Form):
+class TargetGroupFilterForm(forms.ModelForm):
     """
     Форма для фильтрации целевых групп
     """
 
-    region = forms.ChoiceField(
-        label="Регион",
-        choices=NONE_CHOICE + tuple(Region.objects.all().values_list("code", "region")),
-        required=False,
-    )
-    tourism_type = forms.ChoiceField(
-        label="Вид туризма",
-        choices=NONE_CHOICE + settings.TOURISM_TYPES,
-        required=False,
-    )
-    sex = forms.ChoiceField(
-        label="Пол",
-        choices=NONE_CHOICE + settings.SEX,
-        required=False,
-    )
-    age = forms.ChoiceField(
-        label="Возраст",
-        choices=NONE_CHOICE + settings.AGE,
-        required=False,
-    )
+    def __init__(self, **kwargs):
+        for name, field in self.base_fields.items():
+            self.base_fields[name].required = False
+            self.base_fields[name].choices = (
+                NONE_CHOICE + tuple(self.base_fields[name].choices)[1:]
+            )
+        super().__init__(**kwargs)
+
+    class Meta:
+        model = Audience
+        fields = [
+            "code",
+            "tourism_type",
+            "sex",
+            "age",
+        ]
 
 
 class TourismTypeFilterForm(forms.Form):
@@ -70,7 +66,7 @@ def index_view(request, map_type=None, tourism_type=None):
 
     :return: Response object
     """
-    cmap = get_cmap("YlGnBu")
+    color_map = get_cmap("YlGnBu")
 
     try:
         last_date = (
@@ -128,7 +124,7 @@ def index_view(request, map_type=None, tourism_type=None):
     audience_max = Audience.objects.all().aggregate(Max("v_types"))["v_types__max"]
 
     for key, region in enumerate(regions):
-        region["presence_color_code"] = to_hex(cmap(region["popularity_norm"]))
+        region["presence_color_code"] = to_hex(color_map(region["popularity_norm"]))
 
         region["audience_distinct_tourists"] = 0
         for t, _ in settings.TOURISM_TYPES:
@@ -136,7 +132,7 @@ def index_view(request, map_type=None, tourism_type=None):
             region["audience_distinct_tourists"] += region[t]
 
         region["audience_norm"] = region["audience_types"] / audience_max
-        region["audience_color_code"] = to_hex(cmap(region["audience_norm"]))
+        region["audience_color_code"] = to_hex(color_map(region["audience_norm"]))
         region["audience_corr"] = (
             region["audience_types"] * region["population"] / region["audience_all"]
         )
@@ -167,7 +163,7 @@ def target_groups_view(request, region_code=None, tourism_type=None):
     """
     sex = age = None
     if request.POST:
-        region_code = request.POST.get("region")
+        region_code = request.POST.get("code")
         tourism_type = request.POST.get("tourism_type")
         sex = request.POST.get("sex")
         age = request.POST.get("age")
@@ -210,7 +206,7 @@ def target_groups_view(request, region_code=None, tourism_type=None):
         {
             "form": TargetGroupFilterForm(
                 initial={
-                    "region": region_code,
+                    "code": region_code,
                     "tourism_type": tourism_type,
                     "sex": sex,
                     "age": age,
@@ -331,7 +327,7 @@ def analytics_view(request, sort_by=None, tourism_type=None):
             ),
             "tourism_type": tourism_type,
             "tourism_type_title": dict(settings.TOURISM_TYPES)[tourism_type],
-            "regions": regions,  # df_regions.to_dict('records'),
+            "regions": regions,
             "last_date": last_date,
             "prev_date": prev_date,
             "sort_by": sort_by or "popularity_norm",
