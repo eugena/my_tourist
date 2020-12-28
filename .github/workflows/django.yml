@@ -27,4 +27,4 @@ jobs:
         pip install -r requirements/local.txt
     - name: Run Tests
       run: |
-        pytest
+        python manage.py test --settings=config.settings.test
