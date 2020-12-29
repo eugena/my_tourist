@@ -142,7 +142,27 @@ See detailed `cookiecutter-django Docker documentation`_.
 Maintenance
 -----------
 
+Loading data
 ::
 
     docker-compose -f production.yml run -e MY_TOURIST_GLOBAL_CODE=XX --rm django python manage.py update_heat_map
     docker-compose -f production.yml run --rm django python manage.py update_target_data
+
+Backups
+::
+
+    docker-compose -f production.yml exec postgres backup
+
+Backing up the 'my_tourist' database...
+
+SUCCESS: 'my_tourist' database backup 'backup_2020_12_29T09_39_03.sql.gz' has been created and placed in '/backups'.
+
+::
+
+    docker-compose -f production.yml exec postgres backups
+
+These are the backups you have got:
+
+total 5.2M
+
+-rw-r--r-- 1 root root 5.2M Dec 29 09:39 backup_2020_12_29T09_39_03.sql.gz
