@@ -103,8 +103,26 @@ You must set the DSN url in production.
 Deployment
 ----------
 
-The following details how to deploy this application.
+Supervisor
+^^^^^^^^^^
 
+/etc/supervisor/conf.d/my_tourist.conf
+::
+
+    [program:my_tourist]e Out ^W Where Is  ^K Cut Text  ^J Justify   ^C Cur Pos
+    command=docker-compose -f production.yml up
+    directory=/var/www/my_tourist/
+    redirect_stderr=true
+    autostart=true
+    autorestart=true
+    priority=10
+
+
+::
+
+    supervisorctl start my_tourist
+    supervisorctl restart my_tourist
+    supervisorctl stop my_tourist
 
 
 Docker
@@ -113,3 +131,10 @@ Docker
 See detailed `cookiecutter-django Docker documentation`_.
 
 .. _`cookiecutter-django Docker documentation`: http://cookiecutter-django.readthedocs.io/en/latest/deployment-with-docker.html
+
+
+Maintenance
+-----------
+::
+
+    docker-compose -f production.yml run -e MY_TOURIST_GLOBAL_CODE=XX --rm django python manage.py update_heat_map
