@@ -32,7 +32,15 @@ class UserAdmin(auth_admin.UserAdmin):
         ),
         ("Даты", {"fields": ("last_login", "date_joined")}),
     )
-    list_display = ["username", "is_superuser"]
+    list_display = [
+        "username",
+        "last_name",
+        "first_name",
+        "middle_name",
+        "city",
+        "is_superuser",
+        "last_login",
+    ]
     search_fields = [
         "username",
     ]
