@@ -106,10 +106,10 @@ Deployment
 Supervisor
 ^^^^^^^^^^
 
-/etc/supervisor/conf.d/my_tourist.conf
+Contents of the file /etc/supervisor/conf.d/my_tourist.conf:
 ::
 
-    [program:my_tourist]e Out ^W Where Is  ^K Cut Text  ^J Justify   ^C Cur Pos
+    [program:my_tourist]
     command=docker-compose -f production.yml up
     directory=/var/www/my_tourist/
     redirect_stderr=true
@@ -118,6 +118,7 @@ Supervisor
     priority=10
 
 
+Manage:
 ::
 
     supervisorctl start my_tourist
@@ -135,6 +136,7 @@ See detailed `cookiecutter-django Docker documentation`_.
 
 Maintenance
 -----------
+
 ::
 
     docker-compose -f production.yml run -e MY_TOURIST_GLOBAL_CODE=XX --rm django python manage.py update_heat_map
