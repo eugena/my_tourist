@@ -56,7 +56,6 @@ sup.no-border{border:none;padding:0}
 .target-card .card-header .tourism-type .v-icon{width:45px;height:45px;}
 .target-card .type-desc{min-height:180px}
 .target-card .list-group-item{font-size: small}
-.centered-block-container{min-height:690px}
 .login-block{width:100%;position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);-webkit-transform:translate(-50%,-50%);-moz-transform:translate(-50%,-50%);-o-transform:translate(-50%,-50%);-ms-transform:translate(-50%,-50%);}
 .login-block h1{margin-bottom:1rem;font-size:3.5rem}
 .login-block .logo-leader-id{position:relative;bottom:3px;height:1.3rem}
