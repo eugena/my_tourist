@@ -142,13 +142,15 @@ See detailed `cookiecutter-django Docker documentation`_.
 Maintenance
 -----------
 
-Loading data
+Loading data:
+
 ::
 
     docker-compose -f production.yml run -e MY_TOURIST_GLOBAL_CODE=XX --rm django python manage.py update_heat_map
     docker-compose -f production.yml run --rm django python manage.py update_target_data
 
-Backups
+Backups:
+
 ::
 
     docker-compose -f production.yml exec postgres backup
