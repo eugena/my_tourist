@@ -29,7 +29,8 @@ class Command(BaseCommand):
         if settings.USE_REMOTE_WEB_DRIVER:
             try:
                 browser = webdriver.Remote(
-                    "http://127.0.0.1:4444/wd/hub", DesiredCapabilities.CHROME
+                    f"http://{settings.REMOTE_WEB_DRIVER_HOST}:4444/wd/hub",
+                    DesiredCapabilities.CHROME,
                 )
             except BaseException:
                 try:
