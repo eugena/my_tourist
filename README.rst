@@ -118,6 +118,11 @@ Contents of the file /etc/supervisor/conf.d/my_tourist.conf:
     priority=10
 
 
+::
+
+    supervisorctl reread
+    supervisorctl update
+
 Manage:
 ::
 
@@ -125,6 +130,9 @@ Manage:
     supervisorctl restart my_tourist
     supervisorctl stop my_tourist
 
+::
+
+    supervisorctl status
 
 Docker
 ^^^^^^
@@ -140,3 +148,4 @@ Maintenance
 ::
 
     docker-compose -f production.yml run -e MY_TOURIST_GLOBAL_CODE=XX --rm django python manage.py update_heat_map
+    docker-compose -f production.yml run --rm django python manage.py update_target_data
