@@ -1,13 +1,11 @@
 from django import forms
 from django.contrib import admin
 
-from my_tourist.map.models import (
-    Audience,
-    HeatMap,
-    Region,
-    RegionCredentials,
-    RegionResponsible,
-)
+from my_tourist.map.models import Audience
+from my_tourist.map.models import HeatMap
+from my_tourist.map.models import Region
+from my_tourist.map.models import RegionCredentials
+from my_tourist.map.models import RegionResponsible
 
 
 class CredentialsForm(forms.ModelForm):

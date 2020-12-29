@@ -1,12 +1,11 @@
 from django.contrib.auth.decorators import login_required
-from django.urls import path, re_path
+from django.urls import path
+from django.urls import re_path
 
-from my_tourist.map.views import (
-    analytics_view,
-    help_view,
-    index_view,
-    target_groups_view,
-)
+from my_tourist.map.views import analytics_view
+from my_tourist.map.views import help_view
+from my_tourist.map.views import index_view
+from my_tourist.map.views import target_groups_view
 
 urlpatterns = [
     re_path(

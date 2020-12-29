@@ -1,13 +1,19 @@
 from django import forms
 from django.conf import settings
-from django.db.models import F, Func, Max, Sum
+from django.db.models import F
+from django.db.models import Func
+from django.db.models import Max
+from django.db.models import Sum
 from django.shortcuts import render
 from django.utils import timezone
 from matplotlib.cm import get_cmap
 from matplotlib.colors import to_hex
 
-from my_tourist.map.models import Audience, HeatMap, Region
-from my_tourist.utils.region import get_global_code, global_region_cookie
+from my_tourist.map.models import Audience
+from my_tourist.map.models import HeatMap
+from my_tourist.map.models import Region
+from my_tourist.utils.region import get_global_code
+from my_tourist.utils.region import global_region_cookie
 
 NONE_CHOICE = (("", "--выбрать--"),)
 

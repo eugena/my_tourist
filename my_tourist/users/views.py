@@ -1,7 +1,9 @@
 import requests
 from django.conf import settings
-from django.contrib.auth import login, logout
-from django.shortcuts import redirect, render
+from django.contrib.auth import login
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+from django.shortcuts import render
 from django.urls import reverse
 
 from my_tourist.users.models import User

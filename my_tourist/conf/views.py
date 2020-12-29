@@ -4,8 +4,10 @@ from django.urls import reverse_lazy
 from django.views.generic.edit import UpdateView
 
 from my_tourist.conf.models import AppSettings
-from my_tourist.map.models import Region, RegionResponsible
-from my_tourist.utils.region import get_global_code, global_region_cookie
+from my_tourist.map.models import Region
+from my_tourist.map.models import RegionResponsible
+from my_tourist.utils.region import get_global_code
+from my_tourist.utils.region import global_region_cookie
 
 
 class SettingsUpdate(UpdateView):

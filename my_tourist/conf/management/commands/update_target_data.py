@@ -12,7 +12,8 @@ from django.core.management.base import BaseCommand
 from tqdm import tqdm
 
 from my_tourist.conf.management.commands.vkauth.vkauth import VKAuth
-from my_tourist.map.models import Audience, Region
+from my_tourist.map.models import Audience
+from my_tourist.map.models import Region
 from my_tourist.utils.region import get_global_code
 
 

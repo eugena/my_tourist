@@ -16,7 +16,8 @@ from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
 
 from my_tourist.conf.models import AppSettings
-from my_tourist.map.models import HeatMap, Region
+from my_tourist.map.models import HeatMap
+from my_tourist.map.models import Region
 from my_tourist.utils.region import get_global_code
 
 

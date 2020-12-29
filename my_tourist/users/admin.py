@@ -2,7 +2,8 @@ from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
 
-from my_tourist.users.forms import UserChangeForm, UserCreationForm
+from my_tourist.users.forms import UserChangeForm
+from my_tourist.users.forms import UserCreationForm
 
 User = get_user_model()
 
