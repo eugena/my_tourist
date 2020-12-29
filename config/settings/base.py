@@ -266,6 +266,7 @@ LOGGING = {
 # Application
 
 USE_REMOTE_WEB_DRIVER = True
+REMOTE_WEB_DRIVER_HOST = "selenium"
 
 TOURISM_TYPES = (
     ("travel", "Путешествия"),
