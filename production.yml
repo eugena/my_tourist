@@ -13,6 +13,7 @@ services:
     image: my_tourist_production_django
     depends_on:
       - postgres
+      - selenium
     env_file:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
@@ -45,4 +46,4 @@ services:
   selenium:
     image: selenium/standalone-chrome
     ports:
-    - 4444:4444
+      - 4444:4444

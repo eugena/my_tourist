@@ -13,6 +13,7 @@ services:
     container_name: django
     depends_on:
       - postgres
+      - selenium
     volumes:
       - .:/app:z
     env_file:
@@ -37,4 +38,4 @@ services:
   selenium:
     image: selenium/standalone-chrome
     ports:
-    - 4444:4444
+      - 4444:4444
