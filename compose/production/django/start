@@ -4,6 +4,23 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+# Data loading
+# (only for the first build)
+#
+# python manage.py migrate
+#
+# python manage.py loaddata my_tourist/users/fixtures/user.yaml
+#
+# python manage.py loaddata my_tourist/map/fixtures/region.yaml
+# python manage.py loaddata my_tourist/map/fixtures/region_credentials.yaml
+# python manage.py loaddata my_tourist/map/fixtures/region_responsible.yaml
+# python manage.py loaddata my_tourist/map/fixtures/salary.yaml
+# python manage.py loaddata my_tourist/map/fixtures/heat_map.yaml
+# python manage.py loaddata my_tourist/map/fixtures/audience.yaml
+#
+# python manage.py loaddata my_tourist/conf/fixtures/app_settings.yaml
+
+# python manage.py ipgeobase_update
 
 python /app/manage.py collectstatic --noinput
 
