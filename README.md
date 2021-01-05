@@ -25,6 +25,10 @@
 -------------------
 Адрес развернутого решения: [https://my-tourist.datamasters.ru/](https://my-tourist.datamasters.ru/)
 
+Участие в разработке
+--------------------
+
+
 История изменений
 -----------------
 Файл [CHANGELOG.md](CHANGELOG.md).
