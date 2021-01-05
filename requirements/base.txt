@@ -1,6 +1,6 @@
 pytz==2020.5  # https://github.com/stub42/pytz
 python-slugify==4.0.1  # https://github.com/un33k/python-slugify
-Pillow==8.0.1  # https://github.com/python-pillow/Pillow
+Pillow==8.1.0  # https://github.com/python-pillow/Pillow
 rcssmin==1.0.6  # https://github.com/ndparker/rcssmin
 argon2-cffi==20.1.0  # https://github.com/hynek/argon2_cffi
 whitenoise==5.2.0  # https://github.com/evansd/whitenoise
@@ -10,21 +10,21 @@ psycopg2-binary==2.8.6 # https://github.com/psycopg/psycopg2-wheels
 
 # Django
 # ------------------------------------------------------------------------------
-django==3.1.4  # pyup: < 3.1  # https://www.djangoproject.com/
+django==3.1.5  # pyup: < 3.1  # https://www.djangoproject.com/
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-model-utils==4.1.1  # https://github.com/jazzband/django-model-utils
 django-allauth==0.44.0  # https://github.com/pennersr/django-allauth
 django-redis==4.12.1  # https://github.com/jazzband/django-redis
 
 # Application
-django-db-mutex==1.2.0  # https://github.com/ambitioninc/django-db-mutex
+django-db-mutex==2.0.0  # https://github.com/ambitioninc/django-db-mutex
 django-icons==2.2.1  # https://github.com/zostera/django-icons
 django-bootstrap4==2.3.1  # https://github.com/zostera/django-bootstrap4
 django-ipgeobase==1.0.7  # https://github.com/satels/django-ipgeobase
 django-ipware==3.0.2  # https://github.com/un33k/django-ipware
 
 PyYAML==5.3.1  # https://github.com/yaml/pyyaml
-tqdm==4.55.0  # https://github.com/tqdm/tqdm
+tqdm==4.55.1  # https://github.com/tqdm/tqdm
 selenium==3.141.0  # https://github.com/SeleniumHQ/selenium
 matplotlib==3.3.3  # https://github.com/matplotlib/matplotlib
 vk==2.0.2  # https://github.com/voronind/vk
