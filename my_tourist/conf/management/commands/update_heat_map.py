@@ -76,7 +76,8 @@ class Command(BaseCommand):
                 .annotate(date=models.Max("date"))
                 .filter(
                     date__lt=(
-                        datetime.datetime.now() - datetime.timedelta(days=7)
+                        datetime.datetime.now()
+                        - datetime.timedelta(days=env.int("HEAT_MAP_PERIOD", 7))
                     ).strftime("%Y-%m-%d")
                 )[:1]
             )

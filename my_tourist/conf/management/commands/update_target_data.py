@@ -4,6 +4,7 @@ import os
 import time
 from itertools import product
 
+import environ
 import vk
 from db_mutex.db_mutex import db_mutex
 from django.conf import settings
@@ -14,7 +15,6 @@ from tqdm import tqdm
 from my_tourist.conf.management.commands.vkauth.vkauth import VKAuth
 from my_tourist.map.models import Audience
 from my_tourist.map.models import Region
-from my_tourist.utils.region import get_global_code
 
 
 class Command(BaseCommand):
@@ -51,13 +51,21 @@ class Command(BaseCommand):
 
         super(Command, self).__init__(stdout, stderr, no_color, force_color)
 
-        global_code = get_global_code()
+        env = environ.Env()
 
-        region = Region.objects.get(code=global_code)
+        global_code = env.str("MY_TOURIST_GLOBAL_CODE", default=None)
 
-        credentials = region.credentials_codes
+        try:
+            region = Region.objects.get(code=global_code)
+            credentials = region.credentials_codes
+        except Region.DoesNotExist:
+            region = credentials = None
 
-        if credentials.vk_account_id:
+        # region = Region.objects.get(code=global_code)
+
+        # credentials = region.credentials_codes
+
+        if isinstance(region, Region) and getattr(credentials, "vk_account_id", 0):
             self.vk_email = credentials.vk_email
             self.vk_pass = credentials.vk_pass
             self.vk_account_id = credentials.vk_account_id
@@ -149,91 +157,110 @@ class Command(BaseCommand):
 
         qs_regions = Region.objects.all()
 
-        regions = {r.id: r for r in qs_regions}
+        all_regions = {r.id: r for r in qs_regions}
 
-        for region in tqdm(tuple(regions.keys())[:1]):
-            all_in_age = None
-            all_in_age_children_lte_6 = None
-            all_in_age_children_gte_7_lte_12 = None
-            all_in_age_parents = None
+        env = environ.Env()
 
-            all_in_region = self.get_audience(json.dumps({"cities": "-%s" % region}))[
-                "audience_count"
-            ]
+        regions = [
+            r[0]
+            for r in Audience.objects.filter(
+                date__lt=(
+                    datetime.datetime.now()
+                    - datetime.timedelta(days=env.int("AUDIENCE_PERIOD", 30))
+                ).strftime("%Y-%m-%d")
+            )
+            .values_list("code__id")
+            .distinct()[: env.int("AUDIENCE_QTY", 1)]
+        ]
 
-            all_tourists_in_region = self.get_audience(
-                json.dumps(
-                    {
-                        "cities": "-%s" % region,
-                        "interest_categories": ",".join(
-                            [f for f in self.TOUR_TYPE.values() if f is not None]
-                        ),
-                    }
-                )
-            )["audience_count"]
+        if len(regions) > 0:
+            for region in tqdm(regions):
+                all_in_age = None
+                all_in_age_children_lte_6 = None
+                all_in_age_children_gte_7_lte_12 = None
+                all_in_age_parents = None
 
-            for criteria_product in tqdm(criteria_products):
-                target_group = {}
-                criteria = Command.get_criteria([region] + list(criteria_product))
-                if criteria_product[2] is None:
-                    all_in_age = self.get_audience(json.dumps(criteria))[
-                        "audience_count"
-                    ]
+                all_in_region = self.get_audience(
+                    json.dumps({"cities": "-%s" % region})
+                )["audience_count"]
 
-                    # has children
-                    criteria_children = criteria.copy()
-                    criteria_children["interest_categories"] = Command.CHILDREN["1"]
-                    all_in_age_children_lte_6 = self.get_audience(
-                        json.dumps(criteria_children)
-                    )["audience_count"]
-
-                    criteria_children["interest_categories"] = Command.CHILDREN["2"]
-                    all_in_age_children_gte_7_lte_12 = self.get_audience(
-                        json.dumps(criteria_children)
-                    )["audience_count"]
-
-                    # love parents
-                    criteria_parents = criteria.copy()
-                    criteria_parents["interest_categories"] = Command.PARENTS["1"]
-                    all_in_age_parents = self.get_audience(
-                        json.dumps(criteria_parents)
-                    )["audience_count"]
-                else:
-                    target_group["date"] = datetime.datetime.now().strftime("%Y-%m-%d")
-                    target_group["code"] = regions[region]
-                    target_group["age"] = criteria_product[0]
-                    target_group["sex"] = Command.SEX[criteria_product[1]]
-                    target_group["tourism_type"] = criteria_product[2]
-                    target_group["v_all"] = all_in_region
-                    target_group["v_types"] = all_tourists_in_region
-                    target_group["v_sex_age"] = all_in_age
-                    target_group["v_sex_age_child_6"] = all_in_age_children_lte_6
-                    target_group[
-                        "v_sex_age_child_7_12"
-                    ] = all_in_age_children_gte_7_lte_12
-                    target_group["v_sex_age_parents"] = all_in_age_parents
-
-                    type_in_region = self.get_audience(json.dumps(criteria))[
-                        "audience_count"
-                    ]
-                    target_group["v_type_sex_age"] = type_in_region
-
-                    criteria_pair = criteria.copy()
-                    criteria_pair["statuses"] = self.RELATION["in_pair"]
-                    type_in_region_pair = self.get_audience(json.dumps(criteria_pair))[
-                        "audience_count"
-                    ]
-                    target_group["v_type_in_pair"] = type_in_region_pair
-
-                    audience_rec, created = Audience.objects.get_or_create(
-                        code=target_group["code"],
-                        age=target_group["age"],
-                        sex=target_group["sex"],
-                        tourism_type=target_group["tourism_type"],
+                all_tourists_in_region = self.get_audience(
+                    json.dumps(
+                        {
+                            "cities": "-%s" % region,
+                            "interest_categories": ",".join(
+                                [f for f in self.TOUR_TYPE.values() if f is not None]
+                            ),
+                        }
                     )
-                    for k, v in target_group.items():
-                        if k.startswith("v_") and hasattr(audience_rec, k):
-                            setattr(audience_rec, k, v)
-                    audience_rec.save()
+                )["audience_count"]
+
+                for criteria_product in tqdm(criteria_products):
+                    target_group = {}
+                    criteria = Command.get_criteria([region] + list(criteria_product))
+                    if criteria_product[2] is None:
+                        all_in_age = self.get_audience(json.dumps(criteria))[
+                            "audience_count"
+                        ]
+
+                        # has children
+                        criteria_children = criteria.copy()
+                        criteria_children["interest_categories"] = Command.CHILDREN["1"]
+                        all_in_age_children_lte_6 = self.get_audience(
+                            json.dumps(criteria_children)
+                        )["audience_count"]
+
+                        criteria_children["interest_categories"] = Command.CHILDREN["2"]
+                        all_in_age_children_gte_7_lte_12 = self.get_audience(
+                            json.dumps(criteria_children)
+                        )["audience_count"]
+
+                        # love parents
+                        criteria_parents = criteria.copy()
+                        criteria_parents["interest_categories"] = Command.PARENTS["1"]
+                        all_in_age_parents = self.get_audience(
+                            json.dumps(criteria_parents)
+                        )["audience_count"]
+                    else:
+                        target_group["date"] = datetime.datetime.now().strftime(
+                            "%Y-%m-%d"
+                        )
+                        target_group["code"] = all_regions[region]
+                        target_group["age"] = criteria_product[0]
+                        target_group["sex"] = Command.SEX[criteria_product[1]]
+                        target_group["tourism_type"] = criteria_product[2]
+                        target_group["v_all"] = all_in_region
+                        target_group["v_types"] = all_tourists_in_region
+                        target_group["v_sex_age"] = all_in_age
+                        target_group["v_sex_age_child_6"] = all_in_age_children_lte_6
+                        target_group[
+                            "v_sex_age_child_7_12"
+                        ] = all_in_age_children_gte_7_lte_12
+                        target_group["v_sex_age_parents"] = all_in_age_parents
+
+                        type_in_region = self.get_audience(json.dumps(criteria))[
+                            "audience_count"
+                        ]
+                        target_group["v_type_sex_age"] = type_in_region
+
+                        criteria_pair = criteria.copy()
+                        criteria_pair["statuses"] = self.RELATION["in_pair"]
+                        type_in_region_pair = self.get_audience(
+                            json.dumps(criteria_pair)
+                        )["audience_count"]
+                        target_group["v_type_in_pair"] = type_in_region_pair
+
+                        audience_rec, created = Audience.objects.get_or_create(
+                            code=target_group["code"],
+                            age=target_group["age"],
+                            sex=target_group["sex"],
+                            tourism_type=target_group["tourism_type"],
+                        )
+                        for k, v in target_group.items():
+                            if k.startswith("v_") and hasattr(audience_rec, k):
+                                setattr(audience_rec, k, v)
+                        audience_rec.save()
+        else:
+            self.stdout.write(self.style.NOTICE("Already up to date."))
 
         self.stdout.write(self.style.SUCCESS("Done."))
