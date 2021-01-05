@@ -72,18 +72,18 @@ def index_view(request, map_type=None, tourism_type=None):
 
     :return: Response object
     """
-    color_map = get_cmap("YlGnBu")
+    tourism_type = tourism_type or settings.TOURISM_TYPE_DEFAULT
 
     try:
         last_date = (
-            HeatMap.objects.filter(global_code=get_global_code(request))
+            HeatMap.objects.filter(
+                global_code=get_global_code(request), tourism_type=tourism_type
+            )
             .latest("date")
             .date
         )
     except HeatMap.DoesNotExist:
         last_date = timezone.now()
-
-    tourism_type = tourism_type or settings.TOURISM_TYPE_DEFAULT
 
     regions = Region.objects.filter(
         heatmap_codes__date=last_date,
@@ -128,6 +128,8 @@ def index_view(request, map_type=None, tourism_type=None):
     )
 
     audience_max = Audience.objects.all().aggregate(Max("v_types"))["v_types__max"]
+
+    color_map = get_cmap("YlGnBu")
 
     for key, region in enumerate(regions):
         region["presence_color_code"] = to_hex(color_map(region["popularity_norm"]))
@@ -237,13 +239,17 @@ def analytics_view(request, sort_by=None, tourism_type=None):
     """
     try:
         last_date = (
-            HeatMap.objects.filter(global_code=get_global_code(request))
+            HeatMap.objects.filter(
+                global_code=get_global_code(request), tourism_type=tourism_type
+            )
             .latest("date")
             .date
         )
         prev_date = (
             HeatMap.objects.filter(
-                global_code=get_global_code(request), date__lt=last_date
+                global_code=get_global_code(request),
+                date__lt=last_date,
+                tourism_type=tourism_type,
             )
             .latest("date")
             .date
