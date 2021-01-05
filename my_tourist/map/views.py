@@ -237,6 +237,8 @@ def analytics_view(request, sort_by=None, tourism_type=None):
 
     :return: Response object
     """
+    tourism_type = tourism_type or settings.TOURISM_TYPE_DEFAULT
+
     try:
         last_date = (
             HeatMap.objects.filter(
@@ -258,8 +260,6 @@ def analytics_view(request, sort_by=None, tourism_type=None):
         if "last_date" not in locals().keys():
             last_date = timezone.now()
         prev_date = last_date
-
-    tourism_type = tourism_type or settings.TOURISM_TYPE_DEFAULT
 
     regions = Region.objects.filter(
         heatmap_codes__date=last_date,
