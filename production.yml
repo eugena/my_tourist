@@ -44,6 +44,7 @@ services:
       - "0.0.0.0:443:443"
 
   selenium:
+    container_name: selenium
     image: selenium/standalone-chrome
     ports:
       - 4444:4444

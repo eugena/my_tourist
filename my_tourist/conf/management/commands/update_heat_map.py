@@ -28,29 +28,28 @@ class Command(BaseCommand):
     @staticmethod
     def get_browser():
         browser = None
-        if settings.USE_REMOTE_WEB_DRIVER:
+        try:
+            browser = webdriver.Remote(
+                f"http://{settings.REMOTE_WEB_DRIVER_HOST}:4444/wd/hub",
+                DesiredCapabilities.CHROME,
+            )
+        except BaseException:
             try:
-                browser = webdriver.Remote(
-                    f"http://{settings.REMOTE_WEB_DRIVER_HOST}:4444/wd/hub",
-                    DesiredCapabilities.CHROME,
-                )
-            except BaseException:
-                try:
-                    if _platform == "linux" or _platform == "linux2":
+                if _platform == "linux" or _platform == "linux2":
 
-                        chrome_options = webdriver.ChromeOptions()
-                        chrome_options.add_argument("--headless")
-                        chrome_options.add_argument("start-maximized")
-                        chrome_options.add_argument("--disable-gpu")
-                        chrome_options.add_argument("disable-infobars")
-                        chrome_options.add_argument("--disable-extensions")
-                        chrome_options.add_argument("--no-sandbox")
-                        chrome_options.add_argument("--disable-dev-shm-usage")
-                        browser = webdriver.Chrome(chrome_options=chrome_options)
-                    else:
-                        browser = webdriver.Chrome()
-                except BaseException:
-                    raise ImproperlyConfigured("Web driver is not configured properly")
+                    chrome_options = webdriver.ChromeOptions()
+                    chrome_options.add_argument("--headless")
+                    chrome_options.add_argument("start-maximized")
+                    chrome_options.add_argument("--disable-gpu")
+                    chrome_options.add_argument("disable-infobars")
+                    chrome_options.add_argument("--disable-extensions")
+                    chrome_options.add_argument("--no-sandbox")
+                    chrome_options.add_argument("--disable-dev-shm-usage")
+                    browser = webdriver.Chrome(chrome_options=chrome_options)
+                else:
+                    browser = webdriver.Chrome()
+            except BaseException:
+                raise ImproperlyConfigured("Web driver is not configured properly")
         return browser
 
     @db_mutex("update_heat_map")
@@ -110,7 +109,6 @@ class Command(BaseCommand):
                 WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
                     lambda x: x.find_element_by_id("b-domik_popup-username")
                 )
-
                 browser.find_element_by_id("b-domik_popup-username").send_keys(
                     yandex_email
                 )
@@ -145,6 +143,7 @@ class Command(BaseCommand):
                     for q in tqdm(queries):
                         q = q.replace("«", "").replace("»", "")
                         browser.get(settings.WORD_STAT["url"] + q)
+                        time.sleep(np.random.random())
 
                         page_data = WebDriverWait(
                             browser, settings.WORD_STAT["timeout"]
@@ -159,7 +158,7 @@ class Command(BaseCommand):
                                 page_data.get_attribute("onclick")[7:]
                             )["b-regions-statistic"]["regions"]
                         except StaleElementReferenceException:
-                            time.sleep(1)
+                            time.sleep(np.random.random())
                             try:
                                 regions_stat = json.loads(
                                     page_data.get_attribute("onclick")[7:]

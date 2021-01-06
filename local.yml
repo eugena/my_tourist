@@ -36,6 +36,7 @@ services:
       - ./.envs/.local/.postgres
 
   selenium:
+    container_name: selenium
     image: selenium/standalone-chrome
     ports:
       - 4444:4444
