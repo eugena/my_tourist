@@ -27,7 +27,16 @@
 
 Участие в разработке
 --------------------
+Интересуетесь участием в OpenSource проектах, туризмом, есть опыт в разработке аналитических инструментов, есть идеи, как улучшить этот проект?
+Отлично, присоединяйтесь!
 
+Вы можете:
+* Создать [pull request](https://github.com/eugena/my_tourist/compare) для добавления новой функциональности или улучшения имеющейся
+* Создать [запрос на расширение функциональности](https://github.com/eugena/my_tourist/issues/new?assignees=&labels=&template=-------------------------------.md&title=%5BFEATURE%5D)
+* Отправить [отчет об ошибке](https://github.com/eugena/my_tourist/issues/new?assignees=&labels=&template=-------------------.md&title=%5BBUG%5D)
+* Отправить [отчет об уязвимости](https://github.com/eugena/my_tourist/issues/new?assignees=&labels=&template=-----------------------.md&title=)
+
+Заранее больше спасибо за участие и неравнодушие!
 
 История изменений
 -----------------
