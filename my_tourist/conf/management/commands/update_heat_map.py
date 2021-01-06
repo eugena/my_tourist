@@ -13,6 +13,7 @@ from django.core.management.base import BaseCommand
 from django.db import models
 from selenium import webdriver
 from selenium.common.exceptions import StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
@@ -52,6 +53,21 @@ class Command(BaseCommand):
                 raise ImproperlyConfigured("Web driver is not configured properly")
         return browser
 
+    @staticmethod
+    def yandex_authorize(browser, email, password):
+        WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
+            lambda x: x.find_element_by_id("b-domik_popup-username")
+        )
+        browser.find_element_by_id("b-domik_popup-username").send_keys(email)
+        browser.find_element_by_id("b-domik_popup-password").send_keys(password)
+        browser.find_element_by_xpath(
+            "//form[@class='b-domik b-domik_"
+            "type_popup b-domik_position_top i-bem']"
+            "//input[@type='submit']"
+        ).click()
+
+        return browser
+
     @db_mutex("update_heat_map")
     def handle(self, *args, **options):
         """
@@ -64,12 +80,13 @@ class Command(BaseCommand):
 
         global_code = env.str("MY_TOURIST_GLOBAL_CODE", default=None)
 
-        try:
-            region = Region.objects.get(code=global_code)
-        except Region.DoesNotExist:
-            pass
-
-        if global_code is None:
+        if global_code is not None:
+            try:
+                AppSettings.objects.filter(global_code=global_code)[0]
+                region = Region.objects.get(code=global_code)
+            except (IndexError, Region.DoesNotExist):
+                region = None
+        else:
             region = (
                 HeatMap.objects.values("global_code")
                 .annotate(date=models.Max("date"))
@@ -86,127 +103,139 @@ class Command(BaseCommand):
                 region = Region.objects.get(code=global_code)
 
         if global_code is not None:
+            if isinstance(region, Region) and hasattr(region, "credentials_codes"):
+                self.stdout.write(self.style.NOTICE(region.title))
 
-            self.stdout.write(self.style.NOTICE(region.title))
+                qs_regions = Region.objects.all()
 
-            qs_regions = Region.objects.all()
+                regions = {
+                    r["region"]: r["code"]
+                    for r in list(qs_regions.values("region", "code"))
+                }
+                regions_keys = set(regions.keys())
+                regions_instances = {r.region: r for r in qs_regions}
 
-            regions = {
-                r["region"]: r["code"]
-                for r in list(qs_regions.values("region", "code"))
-            }
-            regions_keys = set(regions.keys())
-            regions_instances = {r.region: r for r in qs_regions}
+                with Command.get_browser() as browser:
 
-            credentials = region.credentials_codes
+                    browser.get(settings.WORD_STAT["url"] + "туризм")
 
-            yandex_email = credentials.yandex_email
-            yandex_pass = credentials.yandex_pass
-
-            with Command.get_browser() as browser:
-
-                browser.get(settings.WORD_STAT["url"] + "туризм")
-                WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
-                    lambda x: x.find_element_by_id("b-domik_popup-username")
-                )
-                browser.find_element_by_id("b-domik_popup-username").send_keys(
-                    yandex_email
-                )
-                browser.find_element_by_id("b-domik_popup-password").send_keys(
-                    yandex_pass
-                )
-                browser.find_element_by_xpath(
-                    "//form[@class='b-domik b-domik_"
-                    "type_popup b-domik_position_top i-bem']"
-                    "//input[@type='submit']"
-                ).click()
-
-                for tourism_type, tourism_title in settings.TOURISM_TYPES:
-
-                    self.stdout.write(
-                        self.style.WARNING("Refreshing of " + tourism_type)
+                    browser = Command.yandex_authorize(
+                        browser,
+                        getattr(region.credentials_codes, "yandex_email"),
+                        getattr(region.credentials_codes, "yandex_pass"),
                     )
 
-                    queries = AppSettings.objects.get_or_create(
-                        global_code=global_code, tourism_type=tourism_type
-                    )[0].phrases.split("\n")
-
-                    queries = list(filter(lambda x: len(x) > 1, queries))
-
-                    if len(queries) == 0:
-                        queries = [
-                            tourism_title + " " + region.title,
-                        ]
-
-                    stat = Counter(dict.fromkeys(regions_keys, np.array([0, 0])))
-
-                    for q in tqdm(queries):
-                        q = q.replace("«", "").replace("»", "")
-                        browser.get(settings.WORD_STAT["url"] + q)
-                        time.sleep(np.random.random())
-
-                        page_data = WebDriverWait(
-                            browser, settings.WORD_STAT["timeout"]
-                        ).until(
+                    try:
+                        WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
                             lambda x: x.find_element_by_class_name(
-                                "b-regions-statistic_js_inited"
+                                "b-head-user_js_inited"
+                            )
+                        )
+                    except TimeoutException:
+
+                        browser.get(f'{settings.WORD_STAT["url"]}туризм {region.title}')
+
+                        browser = Command.yandex_authorize(
+                            browser,
+                            env.str("YANDEX_DEFAULT_EMAIL"),
+                            env.str("YANDEX_DEFAULT_PASS"),
+                        )
+
+                        WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
+                            lambda x: x.find_element_by_class_name(
+                                "b-head-user_js_inited"
                             )
                         )
 
-                        try:
-                            regions_stat = json.loads(
-                                page_data.get_attribute("onclick")[7:]
-                            )["b-regions-statistic"]["regions"]
-                        except StaleElementReferenceException:
+                    for tourism_type, tourism_title in settings.TOURISM_TYPES:
+
+                        self.stdout.write(
+                            self.style.WARNING("Refreshing of " + tourism_type)
+                        )
+
+                        queries = AppSettings.objects.get_or_create(
+                            global_code=global_code, tourism_type=tourism_type
+                        )[0].phrases.split("\n")
+
+                        queries = list(filter(lambda x: len(x) > 1, queries))
+
+                        if len(queries) == 0:
+                            queries = [
+                                tourism_title + " " + region.title,
+                            ]
+
+                        stat = Counter(dict.fromkeys(regions_keys, np.array([0, 0])))
+
+                        for q in tqdm(queries):
+                            q = q.replace("«", "").replace("»", "")
+                            browser.get(settings.WORD_STAT["url"] + q)
                             time.sleep(np.random.random())
+
+                            page_data = WebDriverWait(
+                                browser, settings.WORD_STAT["timeout"]
+                            ).until(
+                                lambda x: x.find_element_by_class_name(
+                                    "b-regions-statistic_js_inited"
+                                )
+                            )
+
                             try:
                                 regions_stat = json.loads(
                                     page_data.get_attribute("onclick")[7:]
                                 )["b-regions-statistic"]["regions"]
                             except StaleElementReferenceException:
-                                continue
+                                time.sleep(np.random.random())
+                                try:
+                                    regions_stat = json.loads(
+                                        page_data.get_attribute("onclick")[7:]
+                                    )["b-regions-statistic"]["regions"]
+                                except StaleElementReferenceException:
+                                    continue
 
-                        stat_data = Counter({})
+                            stat_data = Counter({})
 
-                        for rs in regions_stat:
-                            if rs["name"] in regions_keys:
-                                stat_data[rs["name"]] = np.array(
-                                    [rs["cnt"], rs["pp"] if rs["pp"] > 100 else 0],
-                                    dtype=np.float,
-                                )
-                        stat.update(stat_data)
+                            for rs in regions_stat:
+                                if rs["name"] in regions_keys:
+                                    stat_data[rs["name"]] = np.array(
+                                        [rs["cnt"], rs["pp"] if rs["pp"] > 100 else 0],
+                                        dtype=np.float,
+                                    )
+                            stat.update(stat_data)
 
-                    # calculating of weighted popularity
-                    # and max of weighted popularity
-                    weighted_popularity_max = 0
-                    for key, data in stat.items():
-                        qty, popularity = data
-                        weighted_popularity = qty * popularity
-                        stat[key] = np.append(data, weighted_popularity)
-                        weighted_popularity_max = max(
-                            weighted_popularity_max, weighted_popularity
-                        )
+                        # calculating of weighted popularity
+                        # and max of weighted popularity
+                        weighted_popularity_max = 0
+                        for key, data in stat.items():
+                            qty, popularity = data
+                            weighted_popularity = qty * popularity
+                            stat[key] = np.append(data, weighted_popularity)
+                            weighted_popularity_max = max(
+                                weighted_popularity_max, weighted_popularity
+                            )
 
-                    # calculating of normalized popularity
-                    for key, data in stat.items():
-                        _, _, weighted_popularity = data
-                        stat[key] = np.append(
-                            data, weighted_popularity / weighted_popularity_max
-                        )
+                        # calculating of normalized popularity
+                        for key, data in stat.items():
+                            _, _, weighted_popularity = data
+                            stat[key] = np.append(
+                                data, weighted_popularity / weighted_popularity_max
+                            )
 
-                    # saving data to DB
-                    for key, data in stat.items():
-                        qty, popularity, _, popularity_norm = data
-                        heat_map_rec, _ = HeatMap.objects.get_or_create(
-                            code=regions_instances[key],
-                            global_code=region,
-                            tourism_type=tourism_type,
-                            date=datetime.datetime.now().strftime("%Y-%m-%d"),
-                        )
-                        setattr(heat_map_rec, "qty", qty)
-                        setattr(heat_map_rec, "popularity", popularity)
-                        setattr(heat_map_rec, "popularity_norm", popularity_norm)
-                        heat_map_rec.save()
+                        # saving data to DB
+                        for key, data in stat.items():
+                            qty, popularity, _, popularity_norm = data
+                            heat_map_rec, _ = HeatMap.objects.get_or_create(
+                                code=regions_instances[key],
+                                global_code=region,
+                                tourism_type=tourism_type,
+                                date=datetime.datetime.now().strftime("%Y-%m-%d"),
+                            )
+                            setattr(heat_map_rec, "qty", qty)
+                            setattr(heat_map_rec, "popularity", popularity)
+                            setattr(heat_map_rec, "popularity_norm", popularity_norm)
+                            heat_map_rec.save()
+            else:
+                self.stdout.write(self.style.ERROR("Wrong region code."))
+
         else:
             self.stdout.write(self.style.NOTICE("Already up to date."))
 

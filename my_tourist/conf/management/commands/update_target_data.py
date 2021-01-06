@@ -1,6 +1,5 @@
 import datetime
 import json
-import os
 import time
 from itertools import product
 
@@ -70,9 +69,9 @@ class Command(BaseCommand):
             self.vk_pass = credentials.vk_pass
             self.vk_account_id = credentials.vk_account_id
         else:
-            self.vk_email = os.environ.get("VK_DEFAULT_EMAIL")
-            self.vk_pass = os.environ.get("VK_DEFAULT_PASS")
-            self.vk_account_id = os.environ.get("VK_DEFAULT_ACCOUNT_ID")
+            self.vk_email = env.str("VK_DEFAULT_EMAIL")
+            self.vk_pass = env.str("VK_DEFAULT_PASS")
+            self.vk_account_id = env.str("VK_DEFAULT_ACCOUNT_ID")
 
         if self.vk_email is None or self.vk_pass is None or self.vk_account_id is None:
             raise ImproperlyConfigured("VK Credentials are not configured properly")
