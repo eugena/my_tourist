@@ -1,6 +1,25 @@
 Changelog
 =========
 
+
+0.5.1 / 2021-01-06
+==================
+
+#### New Features
+
+* (dev): heatmap and audience automatic update ([#3](https://github.com/eugena/my_tourist/issues/3))
+* new issue templates ([#5](https://github.com/eugena/my_tourist/issues/5))
+
+#### Docs
+
+* CONTRIBUTORS.txt ([#6](https://github.com/eugena/my_tourist/issues/6))
+* SECURITY.md ([#5](https://github.com/eugena/my_tourist/issues/5))
+* README.md ([#5](https://github.com/eugena/my_tourist/issues/5))
+
+#### Build
+
+* (deps): update dependabot.yml ([#2](https://github.com/eugena/my_tourist/issues/2))
+
 0.5.0 / 2020-12-29
 ==================
 
