@@ -145,7 +145,6 @@ class Command(BaseCommand):
                     for q in tqdm(queries):
                         q = q.replace("«", "").replace("»", "")
                         browser.get(settings.WORD_STAT["url"] + q)
-                        time.sleep(settings.WORD_STAT["sleep"])
 
                         page_data = WebDriverWait(
                             browser, settings.WORD_STAT["timeout"]
@@ -160,7 +159,7 @@ class Command(BaseCommand):
                                 page_data.get_attribute("onclick")[7:]
                             )["b-regions-statistic"]["regions"]
                         except StaleElementReferenceException:
-                            time.sleep(10)
+                            time.sleep(100)
                             try:
                                 regions_stat = json.loads(
                                     page_data.get_attribute("onclick")[7:]
