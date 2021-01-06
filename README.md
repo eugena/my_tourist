@@ -36,7 +36,7 @@
 * Отправить [отчет об ошибке](https://github.com/eugena/my_tourist/issues/new?assignees=&labels=&template=-------------------.md&title=%5BBUG%5D)
 * Отправить [отчет об уязвимости](https://github.com/eugena/my_tourist/issues/new?assignees=&labels=&template=-----------------------.md&title=)
 
-**Заранее больше спасибо за участие и неравнодушие!**
+**Заранее больше спасибо за участие!**
 
 История изменений
 -----------------
