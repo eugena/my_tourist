@@ -145,7 +145,6 @@ class Command(BaseCommand):
                     for q in tqdm(queries):
                         q = q.replace("«", "").replace("»", "")
                         browser.get(settings.WORD_STAT["url"] + q)
-                        time.sleep(0.6)
 
                         page_data = WebDriverWait(
                             browser, settings.WORD_STAT["timeout"]
