@@ -291,7 +291,7 @@ SEX = (
 )
 
 WORD_STAT = {
-    "timeout": 5000,
+    "timeout": 800,
     "url": "https://wordstat.yandex.ru/#!/regions?=&filter=regions&words=",
 }
 
