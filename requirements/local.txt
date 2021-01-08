@@ -11,11 +11,6 @@ django-stubs==1.7.0  # https://github.com/typeddjango/django-stubs
 pytest==6.2.1  # https://github.com/pytest-dev/pytest
 pytest-sugar==0.9.4  # https://github.com/Frozenball/pytest-sugar
 
-# Documentation
-# ------------------------------------------------------------------------------
-sphinx==3.4.2  # https://github.com/sphinx-doc/sphinx
-sphinx-autobuild==2020.9.1 # https://github.com/GaretJax/sphinx-autobuild
-
 # Code quality
 # ------------------------------------------------------------------------------
 flake8==3.8.4  # https://github.com/PyCQA/flake8
