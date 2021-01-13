@@ -13,7 +13,7 @@ def get_region_from_geo_base(request):
 
     :return: str
     """
-    region = None
+    region_code = None
     ip, _ = get_client_ip(request)
     geo_bases = IPGeoBase.objects.by_ip(ip)
     if geo_bases.exists():
@@ -21,8 +21,8 @@ def get_region_from_geo_base(request):
         if geo_base_region is not None:
             region = Region.objects.filter(region=geo_base_region.region).first()
             if isinstance(region, Region):
-                region = region.code
-    return region
+                region_code = region.code
+    return region_code
 
 
 def get_global_code(request=None):
