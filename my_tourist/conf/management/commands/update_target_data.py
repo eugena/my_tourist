@@ -80,34 +80,33 @@ class Command(BaseCommand):
 
         self.api = vk.API(session, v=settings.VK_ADS["api_v"], lang="ru")
 
+    def get_target_stats(self, criteria):
+        return self.api.ads.getTargetingStats(
+            account_id=self.vk_account_id,
+            criteria=criteria,
+            link_url="vk.com",
+            link_domain="http://vk.com/wall-183979709_3",
+        )
+
     def get_audience(self, criteria):
         """
 
         :param criteria:
         :return:
         """
-
-        def get_target_stats(criteria):
-            return self.api.ads.getTargetingStats(
-                account_id=self.vk_account_id,
-                criteria=criteria,
-                link_url="vk.com",
-                link_domain="http://vk.com/wall-183979709_3",
-            )
-
         try:
-            return get_target_stats(criteria)
+            return self.get_target_stats(criteria)
         except BaseException:
             time.sleep(5)
-            try:
-                return get_target_stats(criteria)
-            except BaseException:
-                time.sleep(10)
-                try:
-                    return get_target_stats(criteria)
-                except BaseException:
-                    time.sleep(30)
-                    return get_target_stats(criteria)
+        try:
+            return self.get_target_stats(criteria)
+        except BaseException:
+            time.sleep(10)
+        try:
+            return self.get_target_stats(criteria)
+        except BaseException:
+            time.sleep(30)
+            return self.get_target_stats(criteria)
 
     @staticmethod
     def get_criteria(key):
@@ -116,7 +115,7 @@ class Command(BaseCommand):
         city, age, sex, interest = key
 
         # region
-        criteria["cities"] = "-" + str(city)
+        criteria["cities"] = f"-{city}"
 
         # age
         if age in Command.AGES.keys():
@@ -131,6 +130,19 @@ class Command(BaseCommand):
             criteria["interest_categories"] = Command.TOUR_TYPE[interest]
 
         return criteria
+
+    @staticmethod
+    def save_data(target_group):
+        audience_rec, created = Audience.objects.get_or_create(
+            code=target_group["code"],
+            age=target_group["age"],
+            sex=target_group["sex"],
+            tourism_type=target_group["tourism_type"],
+        )
+        for k, v in target_group.items():
+            if k.startswith("v_") and hasattr(audience_rec, k):
+                setattr(audience_rec, k, v)
+        audience_rec.save()
 
     @db_mutex("update_target_data")
     def handle(self, *args, **options):
@@ -176,7 +188,7 @@ class Command(BaseCommand):
                 all_tourists_in_region = self.get_audience(
                     json.dumps(
                         {
-                            "cities": "-%s" % region,
+                            "cities": f"-{region}",
                             "interest_categories": ",".join(
                                 [f for f in self.TOUR_TYPE.values() if f is not None]
                             ),
@@ -239,16 +251,8 @@ class Command(BaseCommand):
                         )["audience_count"]
                         target_group["v_type_in_pair"] = type_in_region_pair
 
-                        audience_rec, created = Audience.objects.get_or_create(
-                            code=target_group["code"],
-                            age=target_group["age"],
-                            sex=target_group["sex"],
-                            tourism_type=target_group["tourism_type"],
-                        )
-                        for k, v in target_group.items():
-                            if k.startswith("v_") and hasattr(audience_rec, k):
-                                setattr(audience_rec, k, v)
-                        audience_rec.save()
+                        Command.save_data(target_group)
+
         else:
             self.stdout.write(self.style.NOTICE("Already up to date."))
 
