@@ -13,7 +13,7 @@
 
 Аналитический инструмент «Мой турист»
 =====================================
-[![License: GPL v3](https://img.shields.io/badge/license-GPL%20v3-blue.svg)](LICENSE)
+[![Maintainability](https://api.codeclimate.com/v1/badges/88a4ffa1d205a1cc77ce/maintainability)](https://codeclimate.com/github/eugena/my_tourist/maintainability)
 [![Pre Commit: enabled](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Built with Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)](https://github.com/pydanny/cookiecutter-django/)
 [![Requirements Status](https://requires.io/github/eugena/my_tourist/requirements.svg?branch=master)](https://requires.io/github/eugena/my_tourist/requirements/?branch=master)

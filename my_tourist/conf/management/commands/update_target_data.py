@@ -59,10 +59,6 @@ class Command(BaseCommand):
         except Region.DoesNotExist:
             region = credentials = None
 
-        # region = Region.objects.get(code=global_code)
-
-        # credentials = region.credentials_codes
-
         if isinstance(region, Region) and getattr(credentials, "vk_account_id", 0):
             self.vk_email = credentials.vk_email
             self.vk_pass = credentials.vk_pass
@@ -117,22 +113,22 @@ class Command(BaseCommand):
     def get_criteria(key):
         criteria = dict()
 
+        city, age, sex, interest = key
+
         # region
-        criteria["cities"] = "-" + str(key[0])
+        criteria["cities"] = "-" + str(city)
 
         # age
-        if Command.AGES[key[1]] is not None:
-            age_form, age_to = Command.AGES[key[1]]
-            criteria["age_from"] = age_form
-            criteria["age_to"] = age_to
+        if age in Command.AGES.keys():
+            criteria["age_from"], criteria["age_to"] = Command.AGES[age]
 
         # sex
-        if Command.SEX[key[2]] is not None:
-            criteria["sex"] = Command.SEX[key[2]]
+        if sex in Command.SEX.keys():
+            criteria["sex"] = Command.SEX[sex]
 
-        # tour_type
-        if Command.TOUR_TYPE[key[3]] is not None:
-            criteria["interest_categories"] = Command.TOUR_TYPE[key[3]]
+        # tourism type
+        if interest in Command.TOUR_TYPE.keys():
+            criteria["interest_categories"] = Command.TOUR_TYPE[interest]
 
         return criteria
 
