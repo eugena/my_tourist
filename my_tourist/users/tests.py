@@ -2,14 +2,10 @@ from django import test
 from django.contrib.auth.models import AnonymousUser
 from django.urls import reverse
 
-from my_tourist.users.models import User
+from my_tourist.utils.tests import CredentialsMixin
 
 
-class UrlsTest(test.TestCase):
-    def setUp(self):
-        self.credentials = {"username": "testuser", "password": "secret"}
-        User.objects.create_user(**self.credentials)
-
+class UrlsTest(CredentialsMixin, test.TestCase):
     def test_responses(self):
         """
         Testing of the front

@@ -3,18 +3,14 @@ from django.core.management import call_command
 from django.urls import reverse
 
 from my_tourist.conf.models import AppSettings
-from my_tourist.users.models import User
+from my_tourist.utils.tests import CredentialsMixin
 
 
-class ConfTest(test.TestCase):
+class ConfTest(CredentialsMixin, test.TestCase):
 
     fixtures = [
         "my_tourist/map/fixtures/region.yaml",
     ]
-
-    def setUp(self):
-        self.credentials = {"username": "testuser", "password": "secret"}
-        User.objects.create_user(**self.credentials)
 
     def test_responses(self):
         """
