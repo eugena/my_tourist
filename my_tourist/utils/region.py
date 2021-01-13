@@ -7,18 +7,22 @@ from ipware import get_client_ip
 from my_tourist.map.models import Region
 
 
-def get_geo_base_region(request):
+def get_region_from_geo_base(request):
     """
-    Returns a region object from the GeoIP base
+    Returns a region code according to the GeoIP base
 
-    :return: obj
+    :return: str
     """
-    geo_base_rec = None
+    region = None
     ip, _ = get_client_ip(request)
     geo_bases = IPGeoBase.objects.by_ip(ip)
     if geo_bases.exists():
-        geo_base_rec = geo_bases[0]
-    return geo_base_rec
+        geo_base_region = geo_bases[0]
+        if geo_base_region is not None:
+            region = Region.objects.filter(region=geo_base_region.region).first()
+            if isinstance(region, Region):
+                region = region.code
+    return region
 
 
 def get_global_code(request=None):
@@ -30,18 +34,16 @@ def get_global_code(request=None):
     global_region = None
 
     if request is not None:
+        # from cookies
         global_region = request.COOKIES.get("global_region")
 
         if global_region is None:
-            geo_base_region = get_geo_base_region(request)
-            if geo_base_region is not None:
-                region = Region.objects.filter(region=geo_base_region.region).first()
-                if isinstance(region, Region):
-                    global_region = region.code
+            # from GeoIP base
+            global_region = get_region_from_geo_base(request)
 
     if global_region is None:
+        # from settings
         global_region = settings.GLOBAL_CODE
-
     return global_region
 
 
