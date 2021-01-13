@@ -11,7 +11,6 @@ from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from tqdm import tqdm
 
-from my_tourist.conf.management.commands.vkauth.vkauth import VKAuth
 from my_tourist.map.models import Audience
 from my_tourist.map.models import Region
 
@@ -76,18 +75,13 @@ class Command(BaseCommand):
         if self.vk_email is None or self.vk_pass is None or self.vk_account_id is None:
             raise ImproperlyConfigured("VK Credentials are not configured properly")
 
-        vk_auth = VKAuth(
-            ["ads"],
-            settings.VK_ADS["app_id"],
-            settings.VK_ADS["api_v"],
-            email=self.vk_email,
-            pswd=self.vk_pass,
+        session = vk.AuthSession(
+            app_id=settings.VK_ADS["app_id"],
+            user_login=self.vk_email,
+            user_password=self.vk_pass,
+            scope="ads",
         )
-        vk_auth.auth()
 
-        access_token = vk_auth.get_token()
-
-        session = vk.Session(access_token=access_token)
         self.api = vk.API(session, v=settings.VK_ADS["api_v"], lang="ru")
 
     def get_audience(self, criteria):
