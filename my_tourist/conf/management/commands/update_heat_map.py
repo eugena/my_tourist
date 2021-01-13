@@ -85,7 +85,6 @@ class Command(BaseCommand):
 
         if global_code is not None:
             try:
-                AppSettings.objects.filter(global_code=global_code)[0]
                 region = Region.objects.get(code=global_code)
             except (IndexError, Region.DoesNotExist):
                 region = None
