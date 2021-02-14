@@ -1,4 +1,4 @@
-pytz==2020.5  # https://github.com/stub42/pytz
+pytz==2021.1  # https://github.com/stub42/pytz
 python-slugify==4.0.1  # https://github.com/un33k/python-slugify
 Pillow==8.1.0  # https://github.com/python-pillow/Pillow
 rcssmin==1.0.6  # https://github.com/ndparker/rcssmin
@@ -10,7 +10,7 @@ psycopg2-binary==2.8.6 # https://github.com/psycopg/psycopg2-wheels
 
 # Django
 # ------------------------------------------------------------------------------
-django==3.1.5  # pyup: < 3.1  # https://www.djangoproject.com/
+django==3.1.6  # pyup: < 3.1  # https://www.djangoproject.com/
 django-environ==0.4.5  # https://github.com/joke2k/django-environ
 django-model-utils==4.1.1  # https://github.com/jazzband/django-model-utils
 django-allauth==0.44.0  # https://github.com/pennersr/django-allauth
@@ -23,8 +23,8 @@ django-bootstrap4==2.3.1  # https://github.com/zostera/django-bootstrap4
 django-ipgeobase==1.0.7  # https://github.com/satels/django-ipgeobase
 django-ipware==3.0.2  # https://github.com/un33k/django-ipware
 
-PyYAML==5.3.1  # https://github.com/yaml/pyyaml
-tqdm==4.56.0  # https://github.com/tqdm/tqdm
+PyYAML==5.4.1  # https://github.com/yaml/pyyaml
+tqdm==4.56.2  # https://github.com/tqdm/tqdm
 selenium==3.141.0  # https://github.com/SeleniumHQ/selenium
-matplotlib==3.3.3  # https://github.com/matplotlib/matplotlib
+matplotlib==3.3.4  # https://github.com/matplotlib/matplotlib
 vk==2.0.2  # https://github.com/voronind/vk
