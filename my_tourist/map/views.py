@@ -72,7 +72,11 @@ def index_view(request, map_type=None, tourism_type=None):
 
     :return: Response object
     """
-    tourism_type = tourism_type or settings.TOURISM_TYPE_DEFAULT
+    tourism_type = (
+        tourism_type
+        if tourism_type in dict(settings.TOURISM_TYPES).keys()
+        else settings.TOURISM_TYPE_DEFAULT
+    )
 
     try:
         last_date = (
@@ -237,7 +241,11 @@ def analytics_view(request, sort_by=None, tourism_type=None):
 
     :return: Response object
     """
-    tourism_type = tourism_type or settings.TOURISM_TYPE_DEFAULT
+    tourism_type = (
+        tourism_type
+        if tourism_type in dict(settings.TOURISM_TYPES).keys()
+        else settings.TOURISM_TYPE_DEFAULT
+    )
 
     try:
         last_date = (
