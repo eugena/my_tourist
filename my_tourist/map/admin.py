@@ -13,8 +13,8 @@ class CredentialsForm(forms.ModelForm):
         model = RegionCredentials
         fields = "__all__"
         widgets = {
-            "yandex_pass": forms.PasswordInput(),
-            "vk_pass": forms.PasswordInput(),
+            "yandex_pass": forms.PasswordInput(render_value=True),
+            "vk_pass": forms.PasswordInput(render_value=True),
         }
 
 
