@@ -1,6 +1,54 @@
 Changelog
 =========
 
+0.5.2 / 2021-03-06
+==================
+
+#### New Features
+* (dev): refactoring of update_heat_map ([#13](https://github.com/eugena/my_tourist/issues/13))
+* (dev): refactoring of update_target_data ([#13](https://github.com/eugena/my_tourist/issues/13))
+* (dev): refactoring of tests ([#13](https://github.com/eugena/my_tourist/issues/13))
+
+#### Bug Fixes
+* error page ([#29](https://github.com/eugena/my_tourist/issues/29))
+* login error ([#40](https://github.com/eugena/my_tourist/issues/40))
+* social credentials update ([#41](https://github.com/eugena/my_tourist/issues/41))
+
+
+#### Docs
+* project description ([#4](https://github.com/eugena/my_tourist/issues/4))
+
+#### Build
+* requirements/local.txt ([3fbd2dd](https://github.com/eugena/my_tourist/commit/3fbd2dd))
+* (deps): bump coverage from 5.3.1 to 5.4 ([8f6a334](https://github.com/eugena/my_tourist/commit/8f6a334))
+* (deps): bump coverage from 5.4 to 5.5 ([0d8c0bf](https://github.com/eugena/my_tourist/commit/0d8c0bf))
+* (deps): bump django from 3.1.5 to 3.1.6 ([35ed929](https://github.com/eugena/my_tourist/commit/35ed929))
+* (deps): bump django from 3.1.6 to 3.1.7 ([b4f0e73](https://github.com/eugena/my_tourist/commit/b4f0e73))
+* (deps): bump django-anymail from 8.1 to 8.2 ([f0d6457](https://github.com/eugena/my_tourist/commit/f0d6457))
+* (deps): bump django-extensions from 3.1.0 to 3.1.1 ([6d375fa](https://github.com/eugena/my_tourist/commit/6d375fa))
+* (deps): bump ipdb from 0.13.4 to 0.13.5 ([d1d6326](https://github.com/eugena/my_tourist/commit/d1d6326))
+* (deps): bump matplotlib from 3.3.3 to 3.3.4 ([f904f82](https://github.com/eugena/my_tourist/commit/f904f82))
+* (deps): bump mypy from 0.790 to 0.800 ([2131fde](https://github.com/eugena/my_tourist/commit/2131fde))
+* (deps): bump mypy from 0.800 to 0.812 ([25c5b6f](https://github.com/eugena/my_tourist/commit/25c5b6f))
+* (deps): bump pillow from 8.1.0 to 8.1.1 ([5da84d4](https://github.com/eugena/my_tourist/commit/5da84d4))
+* (deps): bump pre-commit from 2.10.0 to 2.10.1 ([33852a5](https://github.com/eugena/my_tourist/commit/33852a5))
+* (deps): bump pre-commit from 2.9.3 to 2.10.0 ([5448745](https://github.com/eugena/my_tourist/commit/5448745))
+* (deps): bump pylint-django from 2.3.0 to 2.4.0 ([b1b5441](https://github.com/eugena/my_tourist/commit/b1b5441))
+* (deps): bump pylint-django from 2.4.0 to 2.4.1 ([a04bc76](https://github.com/eugena/my_tourist/commit/a04bc76))
+* (deps): bump pylint-django from 2.4.1 to 2.4.2 ([f76a945](https://github.com/eugena/my_tourist/commit/f76a945))
+* (deps): bump pytest from 6.2.1 to 6.2.2 ([676eb60](https://github.com/eugena/my_tourist/commit/676eb60))
+* (deps): bump pytz from 2020.5 to 2021.1 ([abc104f](https://github.com/eugena/my_tourist/commit/abc104f))
+* (deps): bump pyyaml from 5.3.1 to 5.4 ([6fecf99](https://github.com/eugena/my_tourist/commit/6fecf99))
+* (deps): bump pyyaml from 5.4 to 5.4.1 ([bf57476](https://github.com/eugena/my_tourist/commit/bf57476))
+* (deps): bump sentry-sdk from 0.19.5 to 0.20.0 ([c3b606b](https://github.com/eugena/my_tourist/commit/c3b606b))
+* (deps): bump sentry-sdk from 0.20.0 to 0.20.1 ([6462b60](https://github.com/eugena/my_tourist/commit/6462b60))
+* (deps): bump sentry-sdk from 0.20.1 to 0.20.2 ([0d18e6b](https://github.com/eugena/my_tourist/commit/0d18e6b))
+* (deps): bump sentry-sdk from 0.20.2 to 0.20.3 ([8d4a768](https://github.com/eugena/my_tourist/commit/8d4a768))
+* (deps): bump sentry-sdk from 0.20.3 to 1.0.0 ([0f193e8](https://github.com/eugena/my_tourist/commit/0f193e8))
+* (deps): bump tqdm from 4.55.1 to 4.56.0 ([c962a3f](https://github.com/eugena/my_tourist/commit/c962a3f))
+* (deps): bump tqdm from 4.56.0 to 4.56.2 ([085d1a6](https://github.com/eugena/my_tourist/commit/085d1a6))
+* (deps): bump tqdm from 4.56.2 to 4.57.0 ([375a736](https://github.com/eugena/my_tourist/commit/375a736))
+* (deps): bump tqdm from 4.57.0 to 4.58.0 ([df60196](https://github.com/eugena/my_tourist/commit/df60196))
 
 0.5.1 / 2021-01-06
 ==================
