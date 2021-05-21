@@ -18,7 +18,7 @@ django-redis==4.12.1  # https://github.com/jazzband/django-redis
 
 # Application
 django-db-mutex==2.0.0  # https://github.com/ambitioninc/django-db-mutex
-django-icons==3.0.0  # https://github.com/zostera/django-icons
+django-icons==4.0.0  # https://github.com/zostera/django-icons
 django-bootstrap4==3.0.1  # https://github.com/zostera/django-bootstrap4
 django-ipgeobase==1.0.7  # https://github.com/satels/django-ipgeobase
 django-ipware==3.0.2  # https://github.com/un33k/django-ipware
