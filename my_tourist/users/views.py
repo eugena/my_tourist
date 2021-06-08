@@ -4,6 +4,7 @@ from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import resolve
 from django.urls import reverse
 
 from my_tourist.users.models import User
@@ -24,19 +25,19 @@ def login_view(request):
 
 
 @global_region_cookie
-def callback_view(request, next=None):
+def callback_view(request, next_url=None):
     """
     Получение access_token и авторизация пользователя
 
     :param request: Request object
-    :param next: str
+    :param next_url: str
 
     :return: Response object
     """
     error_description = ""
 
     if request.GET.get("code") is not None:
-        path = reverse("callback", kwargs={"next": next})
+        path = reverse("callback", kwargs={"next_url": next_url})
         result_access_token = requests.post(
             f"{settings.OAUTH_PROVIDER_URL}/oauth/access_token",
             data={
@@ -86,7 +87,8 @@ def callback_view(request, next=None):
                     user.save()
                 if isinstance(user, User):
                     login(request, user)
-                    return redirect((f"/{next}/" if next is not None else "/"))
+                    match = resolve(f"/{next_url}/" if next_url is not None else "/")
+                    return redirect(reverse(match.url_name, kwargs=match.kwargs))
             else:
                 error_description = result_user_data.get("error_description")
         else:
