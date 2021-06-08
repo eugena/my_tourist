@@ -1,6 +1,75 @@
 Changelog
 =========
 
+0.5.3 / 2021-06-08
+==================
+
+#### Bug Fixes
+  * fix: Fix URL redirection from remote source (#50)
+  * fix: Target Data Updater (#93)
+
+#### Build
+  * build(deps): bump pytest-django from 4.3.0 to 4.4.0
+  * build(deps): bump django from 3.2.3 to 3.2.4
+  * build(deps): bump ipdb from 0.13.8 to 0.13.9
+  * build(deps): bump django-redis from 4.12.1 to 5.0.0
+  * build(deps): bump black from 21.5b1 to 21.5b2
+  * build(deps): bump ipdb from 0.13.7 to 0.13.8
+  * build(deps): bump tqdm from 4.60.0 to 4.61.0
+  * build(deps): bump pre-commit from 2.12.1 to 2.13.0
+  * build(deps): bump django-icons from 3.0.0 to 4.0.0
+  * build(deps): bump django-anymail from 8.2 to 8.3
+  * build(deps): bump werkzeug from 2.0.0 to 2.0.1
+  * build(deps): bump pytest-django from 4.2.0 to 4.3.0
+  * build(deps): bump django from 3.2.2 to 3.2.3
+  * build(deps): bump werkzeug from 1.0.1 to 2.0.0
+  * build(deps): bump flake8 from 3.9.1 to 3.9.2
+  * build(deps): bump black from 21.5b0 to 21.5b1
+  * build(deps): bump matplotlib from 3.4.1 to 3.4.2
+  * build(deps): update django.yml
+  * build(deps): update django.yml
+  * build(deps): update django.yml
+  * build(deps): bump django from 3.2.1 to 3.2.2
+  * build(deps): update base.txt
+  * build(deps): update base.txt
+  * build(deps): bump python-slugify from 5.0.0 to 5.0.2
+  * build(deps): bump sentry-sdk from 1.0.0 to 1.1.0
+  * build(deps): bump black from 21.4b2 to 21.5b0
+  * build(deps): bump django from 3.2 to 3.2.1
+  * build(deps): bump pytest from 6.2.3 to 6.2.4
+  * build(deps): bump django-bootstrap4 from 3.0.0 to 3.0.1
+  * build(deps): bump python-slugify from 4.0.1 to 5.0.0
+  * build(deps): bump black from 21.4b0 to 21.4b2
+  * build(deps): bump black from 20.8b1 to 21.4b0
+  * build(deps): bump pylint-django from 2.4.3 to 2.4.4
+  * build(deps): bump pre-commit from 2.12.0 to 2.12.1
+  * build(deps): bump django-extensions from 3.1.2 to 3.1.3
+  * build(deps): bump flake8 from 3.9.0 to 3.9.1
+  * build(deps): bump django-debug-toolbar from 3.2 to 3.2.1
+  * build(deps): bump pytest-django from 4.1.0 to 4.2.0
+  * build(deps): bump django-stubs from 1.7.0 to 1.8.0
+  * build(deps): bump django-bootstrap4 from 2.3.1 to 3.0.0
+  * build(deps): bump django-icons from 2.2.1 to 3.0.0
+  * build(deps): bump pylint-django from 2.4.2 to 2.4.3
+  * build(deps): bump tqdm from 4.59.0 to 4.60.0
+  * build(deps): bump pre-commit from 2.11.1 to 2.12.0
+  * build(deps): bump django from 3.1.7 to 3.2
+  * build(deps): bump pytest from 6.2.2 to 6.2.3
+  * build(deps): bump django-extensions from 3.1.1 to 3.1.2
+  * build(deps): bump pillow from 8.1.2 to 8.2.0
+  * build(deps): bump matplotlib from 3.4.0 to 3.4.1
+  * build(deps): bump gunicorn from 20.0.4 to 20.1.0
+  * build(deps): bump hiredis from 1.1.0 to 2.0.0
+  * build: turned off python 3.6 support
+  * build(deps): bump matplotlib from 3.3.4 to 3.4.0
+  * build(deps): bump ipdb from 0.13.6 to 0.13.7
+  * build(deps): bump flake8 from 3.8.4 to 3.9.0
+  * build(deps): bump pre-commit from 2.11.0 to 2.11.1
+  * build(deps): bump pillow from 8.1.1 to 8.1.2
+  * build(deps): bump ipdb from 0.13.5 to 0.13.6
+  * build(deps): bump pre-commit from 2.10.1 to 2.11.0
+  * build(deps): bump tqdm from 4.58.0 to 4.59.0
+
 0.5.2 / 2021-03-06
 ==================
 
