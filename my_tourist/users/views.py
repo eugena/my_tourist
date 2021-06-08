@@ -4,6 +4,7 @@ from django.contrib.auth import login
 from django.contrib.auth import logout
 from django.shortcuts import redirect
 from django.shortcuts import render
+from django.urls import NoReverseMatch
 from django.urls import resolve
 from django.urls import reverse
 
@@ -88,7 +89,11 @@ def callback_view(request, next_url=None):
                 if isinstance(user, User):
                     login(request, user)
                     match = resolve(f"/{next_url}/" if next_url is not None else "/")
-                    return redirect(reverse(match.url_name, kwargs=match.kwargs))
+                    try:
+                        url = reverse(match.url_name, kwargs=match.kwargs)
+                    except NoReverseMatch:
+                        url = "/"
+                    return redirect(url)
             else:
                 error_description = result_user_data.get("error_description")
         else:
