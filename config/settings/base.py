@@ -239,6 +239,9 @@ MANAGERS = ADMINS
 # Django Admin Title
 ADMIN_TITLE = "«Мой турист»"
 
+# DB_MUTEX
+DB_MUTEX_TTL_SECONDS = 180 * 60
+
 # LOGGING
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#logging
