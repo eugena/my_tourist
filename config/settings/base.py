@@ -46,6 +46,8 @@ DATABASES = {"default": env.db("DATABASE_URL", default="sqlite:////:memory:")}
 
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
+DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
@@ -91,15 +93,7 @@ MIGRATION_MODULES = {"sites": "my_tourist.contrib.sites.migrations"}
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
-    # "allauth.account.auth_backends.AuthenticationBackend",
 ]
-# https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
-# AUTH_USER_MODEL = "users.User"
-# https://docs.djangoproject.com/en/dev/ref/settings/#login-redirect-url
-# LOGIN_REDIRECT_URL = "users:redirect"
-# https://docs.djangoproject.com/en/dev/ref/settings/#login-url
-# LOGIN_URL = "account_login"
-
 
 LOGIN_URL = "/login/"
 
