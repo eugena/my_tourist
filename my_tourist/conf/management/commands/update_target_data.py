@@ -4,7 +4,7 @@ import time
 from itertools import product
 
 import environ
-import vk
+import vk_api
 from db_mutex.db_mutex import db_mutex
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
@@ -71,14 +71,14 @@ class Command(BaseCommand):
         if self.vk_email is None or self.vk_pass is None or self.vk_account_id is None:
             raise ImproperlyConfigured("VK Credentials are not configured properly")
 
-        session = vk.AuthSession(
-            app_id=settings.VK_ADS["app_id"],
-            user_login=self.vk_email,
-            user_password=self.vk_pass,
+        session = vk_api.VkApi(
+            self.vk_email,
+            self.vk_pass,
             scope="ads",
+            api_version=settings.VK_ADS["api_v"],
         )
-
-        self.api = vk.API(session, v=settings.VK_ADS["api_v"], lang="ru")
+        session.auth()
+        self.api = session.get_api()
 
     def get_target_stats(self, criteria):
         return self.api.ads.getTargetingStats(
@@ -86,6 +86,7 @@ class Command(BaseCommand):
             criteria=criteria,
             link_url="vk.com",
             link_domain="http://vk.com/wall-183979709_3",
+            ad_id=self.vk_account_id,
         )
 
     def get_audience(self, criteria):

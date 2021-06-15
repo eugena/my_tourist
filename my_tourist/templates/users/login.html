@@ -9,7 +9,7 @@
     <div class="login-block">
         <h1 class="text-center">{% icon 'compass' %} Мой турист</h1>
         <p class="text-center">
-            <a href="{{ OAUTH_PROVIDER_URL }}/oauth/authorize?client_id={{ OAUTH_CLIENT_ID }}&redirect_uri=http{% if request.is_secure%}s{% endif %}://{{ request.get_host }}/callback{{ request.GET.next }}&response_type=code">Войти с помощью <img class="logo-leader-id" src="{% static 'img/leader-id.svg' %}"></a>
+            <a href="{{ OAUTH_PROVIDER_URL }}/oauth/authorize?client_id={{ OAUTH_CLIENT_ID }}&redirect_uri=http{% if request.is_secure%}s{% endif %}://{{ request.get_host }}/callback{{ request.GET.next }}&response_type=code">Войти с помощью <img class="logo-leader-id" src="{% static 'img/leader-id.svg' %}" alt=""></a>
         </p>
     </div>
 </div>
