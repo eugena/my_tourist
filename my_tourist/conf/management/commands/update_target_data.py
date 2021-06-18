@@ -86,7 +86,6 @@ class Command(BaseCommand):
             criteria=criteria,
             link_url="vk.com",
             link_domain="http://vk.com/wall-183979709_3",
-            ad_id=self.vk_account_id,
         )
 
     def get_audience(self, criteria):
