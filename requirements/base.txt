@@ -24,7 +24,7 @@ django-ipgeobase==1.0.7  # https://github.com/satels/django-ipgeobase
 django-ipware==3.0.7  # https://github.com/un33k/django-ipware
 
 PyYAML==5.4.1  # https://github.com/yaml/pyyaml
-tqdm==4.62.0  # https://github.com/tqdm/tqdm
+tqdm==4.62.1  # https://github.com/tqdm/tqdm
 selenium==3.141.0  # https://github.com/SeleniumHQ/selenium
 matplotlib==3.4.3  # https://github.com/matplotlib/matplotlib
 vk-api==11.9.4 # https://github.com/python273/vk_api
