@@ -36,6 +36,7 @@ class AppSettings(TimeStampedModel):
         self.phrases = (
             self.phrases.replace("\\", "")
             .replace('"', "")
+            .replace("&", " ")
             .replace("«", "")
             .replace("»", "")
             .replace("‟", "")
@@ -46,6 +47,7 @@ class AppSettings(TimeStampedModel):
             .replace("+ ", "+")
             .replace("– ", "")
             .replace("— ", "")
+            .replace("  ", " ")
             .replace("\r\n", "\n")
             .replace("\n\n", "\n")
         )
