@@ -134,7 +134,6 @@ class Command(BaseCommand):
         stat = Counter(dict.fromkeys(regions_keys, np.array([0, 0])))
 
         for q in tqdm(queries):
-            q = q.replace("«", "").replace("»", "")
             browser.get(settings.WORD_STAT["url"] + q)
             time.sleep(np.random.random())
 

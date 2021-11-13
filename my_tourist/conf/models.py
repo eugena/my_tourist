@@ -32,6 +32,25 @@ class AppSettings(TimeStampedModel):
     def short_phrases(self):
         return truncatewords(self.phrases, 21)
 
+    def save(self, *args, **kwargs):
+        self.phrases = (
+            self.phrases.replace("\\", "")
+            .replace('"', "")
+            .replace("«", "")
+            .replace("»", "")
+            .replace("‟", "")
+            .replace("”", "")
+            .replace("„", "")
+            .replace("‚", "")
+            .replace("‘", "")
+            .replace("+ ", "+")
+            .replace("– ", "")
+            .replace("— ", "")
+            .replace("\r\n", "\n")
+            .replace("\n\n", "\n")
+        )
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.global_code} {self.tourism_type}"
 
