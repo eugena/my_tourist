@@ -56,6 +56,6 @@
 
 Полная информация в файле: [LICENSE](LICENSE).
 
-Выразить благодарность
+Поблагодарить
 ----------------------
 [![Buy Me a Coffee Badge](https://img.shields.io/badge/-Buy%20me%20a%20coffee-ff813f?style=flat-square&labelColor=ff813f&logo=ko-fi&logoColor=white&link=https://www.buymeacoffee.com/eugena)](https://www.buymeacoffee.com/eugena)
