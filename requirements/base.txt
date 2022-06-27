@@ -27,4 +27,4 @@ PyYAML==6.0  # https://github.com/yaml/pyyaml
 tqdm==4.64.0  # https://github.com/tqdm/tqdm
 selenium==4.3.0  # https://github.com/SeleniumHQ/selenium
 matplotlib==3.5.2  # https://github.com/matplotlib/matplotlib
-vk-api==11.9.8 # https://github.com/python273/vk_api
+vk-api==11.9.9 # https://github.com/python273/vk_api
