@@ -135,7 +135,7 @@ class Command(BaseCommand):
 
         for q in tqdm(queries):
             browser.get(settings.WORD_STAT["url"] + q)
-            time.sleep(np.random.random())
+            time.sleep(5 + 10 * np.random.random() + 5 * np.random.random())
 
             page_data = WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
                 lambda x: x.find_element_by_class_name("b-regions-statistic_js_inited")
@@ -247,6 +247,8 @@ class Command(BaseCommand):
                         stat = Command.get_stat(browser, queries, regions_keys)
                         stat = Command.calc_extra(stat)
                         Command.save_data(stat, regions_instances, region, tourism_type)
+
+                        time.sleep(10 * np.random.random())
             else:
                 self.stdout.write(self.style.ERROR("Wrong region code."))
         else:
