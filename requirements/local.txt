@@ -16,7 +16,7 @@ pytest-sugar==0.9.5  # https://github.com/Frozenball/pytest-sugar
 flake8==4.0.1  # https://github.com/PyCQA/flake8
 flake8-isort==4.2.0  # https://github.com/gforcada/flake8-isort
 coverage==6.4.4  # https://github.com/nedbat/coveragepy
-black==22.6.0  # https://github.com/ambv/black
+black==22.8.0  # https://github.com/ambv/black
 pylint-django==2.5.3  # https://github.com/PyCQA/pylint-django
 pre-commit==2.20.0  # https://github.com/pre-commit/pre-commit
 
