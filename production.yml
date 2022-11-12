@@ -45,6 +45,6 @@ services:
 
   selenium:
     container_name: selenium
-    image: selenium/standalone-chrome
+    image: selenium/standalone-chrome:latest
     ports:
       - 4444:4444
