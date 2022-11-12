@@ -141,6 +141,10 @@ class Command(BaseCommand):
         if self.browser is None:
 
             chrome_options = webdriver.ChromeOptions()
+            chrome_options.add_argument(
+                "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 13_0_1) "
+                "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
+            )
 
             if self.env("PROXY_HOST", default=None):
                 plugin_file = 'proxy_auth_plugin.zip'
@@ -148,9 +152,9 @@ class Command(BaseCommand):
                     zp.writestr("manifest.json", manifest_json)
                     zp.writestr(
                         "background.js", background_js % (
-                            self.env("PROXY_HOST"), 
-                            self.env("PROXY_PORT"), 
-                            self.env("PROXY_LOGIN"), 
+                            self.env("PROXY_HOST"),
+                            self.env("PROXY_PORT"),
+                            self.env("PROXY_LOGIN"),
                             self.env("PROXY_PASS")))
                 chrome_options.add_extension(plugin_file)
 
@@ -213,7 +217,7 @@ class Command(BaseCommand):
             self.browser.find_element(By.ID, "b-domik_popup-username").send_keys(email)
             self.browser.find_element(By.ID, "b-domik_popup-password").send_keys(password)
             self.browser.find_element(
-                By.XPATH, 
+                By.XPATH,
                 "//form[@class='b-domik b-domik_"
                 "type_popup b-domik_position_top i-bem']"
                 "//input[@type='submit']"
@@ -259,7 +263,7 @@ class Command(BaseCommand):
                         authorized = True
                     except:
                         pass
-    
+
             return authorized
 
         if yandex_login(email, password, answer):
@@ -268,8 +272,8 @@ class Command(BaseCommand):
             )
         else:
             yandex_login(
-                self.env.str("YANDEX_DEFAULT_EMAIL"), 
-                self.env.str("YANDEX_DEFAULT_PASS"), 
+                self.env.str("YANDEX_DEFAULT_EMAIL"),
+                self.env.str("YANDEX_DEFAULT_PASS"),
                 self.env.str("YANDEX_DEFAULT_ANSWER"))
 
     def get_queries(self, tourism_type):
@@ -300,7 +304,7 @@ class Command(BaseCommand):
             Counter(dict.fromkeys(regions_keys, np.array([0, 0])))
 
         for q in tqdm(
-            queries[q_index + 1:], 
+            queries[q_index + 1:],
             initial=q_index + 1, total=len(queries)):
 
             self.get_browser().get(settings.WORD_STAT["url"] + q)
@@ -308,6 +312,7 @@ class Command(BaseCommand):
 
             page_data = WebDriverWait(self.get_browser(), settings.WORD_STAT["timeout"]).until(
                 lambda x: x.find_element(By.CLASS_NAME, "b-regions-statistic_js_inited")
+                #b-regions-statistic i-bem b-regions-statistic_js_inited
             )
 
             regions_stat = None
@@ -385,7 +390,7 @@ class Command(BaseCommand):
             heat_map_rec.save()
 
         cache.delete_many(
-            [f"{self.get_cache_key_prefix(tourism_type)}_stat", 
+            [f"{self.get_cache_key_prefix(tourism_type)}_stat",
             f"{self.get_cache_key_prefix(tourism_type)}_q"])
 
     def handle(self, *args, **options):
@@ -397,7 +402,7 @@ class Command(BaseCommand):
         """
 
         if self.global_code is not None:
-            if isinstance(self.home_region, Region): 
+            if isinstance(self.home_region, Region):
                 self.stdout.write(self.style.NOTICE(self.home_region.title))
 
                 for tourism_type in settings.TOURISM_TYPES:
@@ -417,8 +422,8 @@ class Command(BaseCommand):
                                 self.stdout.write(self.style.WARNING("Refreshing of " + tourism_type[0]))
                                 stat = self.get_stat(tourism_type, set(regions.keys()))
                                 self.save_data(
-                                    Command.calc_extra(stat), 
-                                    {r.region: r for r in qs_regions}, 
+                                    Command.calc_extra(stat),
+                                    {r.region: r for r in qs_regions},
                                     tourism_type)
                         except (DBMutexError, DBMutexTimeoutError):
                             self.stdout.write(
