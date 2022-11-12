@@ -24,6 +24,8 @@ set -o nounset
 
 python /app/manage.py collectstatic --noinput
 
+python /app/manage.py migrate
+
 compress_enabled() {
 python << END
 import sys
