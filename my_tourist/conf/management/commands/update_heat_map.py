@@ -104,7 +104,11 @@ class Command(BaseCommand):
             try:
                 self.browser = webdriver.Remote(
                     f"http://{settings.REMOTE_WEB_DRIVER_HOST}:4444/wd/hub",
-                    DesiredCapabilities.CHROME,
+                    DesiredCapabilities.CHROME.update({
+                        'goog:chromeOptions': {
+                            'args': ['--no-sandbox', '--headless']
+                        }
+                    }),
                 )
             except BaseException:
                 try:
