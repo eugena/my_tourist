@@ -1,6 +1,7 @@
 import datetime
 import json
 import time
+import zipfile
 from collections import Counter
 from sys import platform as _platform
 
@@ -28,6 +29,58 @@ from my_tourist.map.models import RegionCredentials
 
 cache = caches['db']
 
+manifest_json = """
+{
+    "version": "1.0.0",
+    "manifest_version": 2,
+    "name": "Chrome Proxy",
+    "permissions": [
+        "proxy",
+        "tabs",
+        "unlimitedStorage",
+        "storage",
+        "<all_urls>",
+        "webRequest",
+        "webRequestBlocking"
+    ],
+    "background": {
+        "scripts": ["background.js"]
+    },
+    "minimum_chrome_version":"22.0.0"
+}
+"""
+
+background_js = """
+var config = {
+        mode: "fixed_servers",
+        rules: {
+        singleProxy: {
+            scheme: "http",
+            host: "%s",
+            port: parseInt(%s)
+        },
+        bypassList: ["localhost"]
+        }
+    };
+
+chrome.proxy.settings.set({value: config, scope: "regular"}, function() {});
+
+function callbackFn(details) {
+    return {
+        authCredentials: {
+            username: "%s",
+            password: "%s"
+        }
+    };
+}
+
+chrome.webRequest.onAuthRequired.addListener(
+            callbackFn,
+            {urls: ["<all_urls>"]},
+            ['blocking']
+);
+"""
+
 class Command(BaseCommand):
     help = "Updates the heat map according to the search phrases set"
 
@@ -49,9 +102,10 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs)
-        env = environ.Env()
 
-        global_code = env.str("MY_TOURIST_GLOBAL_CODE", default=None)
+        self.env = environ.Env()
+
+        global_code = self.env.str("MY_TOURIST_GLOBAL_CODE", default=None)
 
         if global_code is not None:
             try:
@@ -67,7 +121,7 @@ class Command(BaseCommand):
                 .filter(
                     date__lt=(
                         datetime.datetime.now()
-                        - datetime.timedelta(days=env.int("HEAT_MAP_PERIOD", 7))
+                        - datetime.timedelta(days=self.env.int("HEAT_MAP_PERIOD", 7))
                     ).strftime("%Y-%m-%d"))
                 .order_by("global_code")[:1]
             )
@@ -83,32 +137,39 @@ class Command(BaseCommand):
             yandex_answer__isnull=False,).exclude(
             yandex_answer='').order_by('?').first()
 
-    @staticmethod
-    def get_local_driver():
-        if _platform == "linux" or _platform == "linux2":
-            chrome_options = webdriver.ChromeOptions()
-            chrome_options.add_argument("--headless")
-            chrome_options.add_argument("start-maximized")
-            chrome_options.add_argument("--disable-gpu")
-            chrome_options.add_argument("disable-infobars")
-            chrome_options.add_argument("--disable-extensions")
-            chrome_options.add_argument("--no-sandbox")
-            chrome_options.add_argument("--disable-dev-shm-usage")
-            browser = webdriver.Chrome(chrome_options=chrome_options)
-        else:
-            browser = webdriver.Chrome()
-        return browser
-
     def get_browser(self):
         if self.browser is None:
+
+            chrome_options = webdriver.ChromeOptions()
+
+            if self.env("PROXY_HOST", default=None):
+                plugin_file = 'proxy_auth_plugin.zip'
+                with zipfile.ZipFile(plugin_file, 'w') as zp:
+                    zp.writestr("manifest.json", manifest_json)
+                    zp.writestr(
+                        "background.js", background_js % (
+                            self.env("PROXY_HOST"), 
+                            self.env("PROXY_PORT"), 
+                            self.env("PROXY_LOGIN"), 
+                            self.env("PROXY_PASS")))
+                chrome_options.add_extension(plugin_file)
+
             try:
                 self.browser = webdriver.Remote(
                     f"http://{settings.REMOTE_WEB_DRIVER_HOST}:4444/wd/hub",
-                    DesiredCapabilities.CHROME,
-                )
+                    options=chrome_options)
             except BaseException:
                 try:
-                    self.browser = Command.get_local_driver()
+                    if _platform == "linux" or _platform == "linux2":
+                        chrome_options.add_argument("--headless")
+                        chrome_options.add_argument("start-maximized")
+                        chrome_options.add_argument("--disable-gpu")
+                        chrome_options.add_argument("disable-infobars")
+                        chrome_options.add_argument("--disable-extensions")
+                        chrome_options.add_argument("--no-sandbox")
+                        chrome_options.add_argument("--disable-dev-shm-usage")
+
+                    self.browser = webdriver.Chrome(chrome_options=chrome_options)
                 except BaseException:
                     raise ImproperlyConfigured("Web driver is not configured properly")
 
@@ -206,13 +267,10 @@ class Command(BaseCommand):
                 self.style.WARNING(f"Worker ID is {email}")
             )
         else:
-            env = environ.Env()
-
             yandex_login(
-                env.str("YANDEX_DEFAULT_EMAIL"), 
-                env.str("YANDEX_DEFAULT_PASS"), 
-                env.str("YANDEX_DEFAULT_ANSWER"))
-
+                self.env.str("YANDEX_DEFAULT_EMAIL"), 
+                self.env.str("YANDEX_DEFAULT_PASS"), 
+                self.env.str("YANDEX_DEFAULT_ANSWER"))
 
     def get_queries(self, tourism_type):
 
@@ -285,14 +343,12 @@ class Command(BaseCommand):
 
     def is_fresh(self, tourism_type):
 
-        env = environ.Env()
-
         try:
             return HeatMap.objects.filter(
                 tourism_type=tourism_type[0],
                 global_code=self.global_code
             )[0].date > (datetime.datetime.now() \
-                - datetime.timedelta(days=env.int("HEAT_MAP_PERIOD", 7))).date()
+                - datetime.timedelta(days=self.env.int("HEAT_MAP_PERIOD", 7))).date()
         except IndexError:
             return False
 
