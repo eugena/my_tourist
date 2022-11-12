@@ -6,12 +6,14 @@ from sys import platform as _platform
 
 import environ
 import numpy as np
-from db_mutex.db_mutex import db_mutex
+from db_mutex.db_mutex import db_mutex, DBMutexError, DBMutexTimeoutError
 from django.conf import settings
+from django.core.cache import caches
 from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import BaseCommand
 from django.db import models
 from selenium import webdriver
+from selenium.webdriver.common.by import By
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import TimeoutException
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -21,10 +23,65 @@ from tqdm import tqdm
 from my_tourist.conf.models import AppSettings
 from my_tourist.map.models import HeatMap
 from my_tourist.map.models import Region
+from my_tourist.map.models import RegionCredentials
 
+
+cache = caches['db']
 
 class Command(BaseCommand):
     help = "Updates the heat map according to the search phrases set"
+
+    browser = None
+
+    random_phrases = [
+        "лавандовый",
+        "дорога домой",
+        "сумки оптом",
+        "сметана курск",
+        "подземка",
+        "билеты на самолет",
+        "масло ши",
+        "недвижимость петропавловск",
+        "рюкзак походный",
+        "приставки в питере"
+    ]
+
+    def __init__(self, *args, **kwargs):
+
+        super().__init__(*args, **kwargs)
+        env = environ.Env()
+
+        global_code = env.str("MY_TOURIST_GLOBAL_CODE", default=None)
+
+        if global_code is not None:
+            try:
+                region = Region.objects.get(code=global_code)
+            except (IndexError, Region.DoesNotExist):
+                region = None
+        else:
+            region = (
+                HeatMap.objects.values(
+                    "global_code",
+                    "tourism_type")
+                .annotate(date=models.Max("date"))
+                .filter(
+                    date__lt=(
+                        datetime.datetime.now()
+                        - datetime.timedelta(days=env.int("HEAT_MAP_PERIOD", 7))
+                    ).strftime("%Y-%m-%d"))
+                .order_by("global_code")[:1]
+            )
+
+            if len(region):
+                global_code = region[0].get("global_code")
+                region = Region.objects.get(code=global_code)
+
+        self.global_code = global_code
+        self.home_region = region
+
+        self.credentials = RegionCredentials.objects.filter(
+            yandex_answer__isnull=False,).exclude(
+            yandex_answer='').order_by('?').first()
 
     @staticmethod
     def get_local_driver():
@@ -42,113 +99,166 @@ class Command(BaseCommand):
             browser = webdriver.Chrome()
         return browser
 
-    @staticmethod
-    def get_browser():
-        try:
-            browser = webdriver.Remote(
-                f"http://{settings.REMOTE_WEB_DRIVER_HOST}:4444/wd/hub",
-                DesiredCapabilities.CHROME,
-            )
-        except BaseException:
+    def get_browser(self):
+        if self.browser is None:
             try:
-                browser = Command.get_local_driver()
+                self.browser = webdriver.Remote(
+                    f"http://{settings.REMOTE_WEB_DRIVER_HOST}:4444/wd/hub",
+                    DesiredCapabilities.CHROME,
+                )
             except BaseException:
-                raise ImproperlyConfigured("Web driver is not configured properly")
-        return browser
+                try:
+                    self.browser = Command.get_local_driver()
+                except BaseException:
+                    raise ImproperlyConfigured("Web driver is not configured properly")
 
-    @staticmethod
-    def yandex_authorize(browser, email, password):
-        WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
-            lambda x: x.find_element_by_id("b-domik_popup-username")
-        )
-        browser.find_element_by_id("b-domik_popup-username").send_keys(email)
-        browser.find_element_by_id("b-domik_popup-password").send_keys(password)
-        browser.find_element_by_xpath(
-            "//form[@class='b-domik b-domik_"
-            "type_popup b-domik_position_top i-bem']"
-            "//input[@type='submit']"
-        ).click()
 
+            self.yandex_authorize(
+                getattr(self.credentials, "yandex_email"),
+                getattr(self.credentials, "yandex_pass"),
+                getattr(self.credentials, "yandex_answer"),
+            )
+        return self.browser
+
+    def i_am_not_a_robot(self):
         try:
-            WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
-                lambda x: x.find_element_by_class_name("b-head-user_js_inited")
+            WebDriverWait(self.browser, settings.WORD_STAT["timeout"]).until(
+                lambda x: x.find_element(By.CLASS_NAME, "CheckboxCaptcha-Button")
             )
+
+            self.browser.find_element(By.CLASS_NAME, "CheckboxCaptcha-Button").click()
+
         except TimeoutException:
-            env = environ.Env()
-            browser.get(f'{settings.WORD_STAT["url"]}достопримечательности региона')
+            pass
 
-            browser = Command.yandex_authorize(
-                browser,
-                env.str("YANDEX_DEFAULT_EMAIL"),
-                env.str("YANDEX_DEFAULT_PASS"),
+    def yandex_authorize(self, email, password, answer):
+
+        def yandex_login(email, password, answer):
+
+            authorized = False
+
+            self.browser.get(f'{settings.WORD_STAT["url"]}{Command.random_phrases[np.random.randint(10)]}')
+            self.browser.add_cookie({
+                'name': 'fuid01',
+                'value': "5836412d16a03625.b4CCj5XYZ1uq2-" \
+                        "jLnx1SRCibSTWwpZrFs8csmt6fuRRWyJ" \
+                        "ed048ziP-oxjHk7K5Qlzm8if3rNqjFLOxcehsY9pH8c_" \
+                        "lMtPKYXY9ZcVSG3MZzkFnGZ9HaDA6LTg41cbMd"})
+            self.browser.get(f'{settings.WORD_STAT["url"]}{Command.random_phrases[np.random.randint(10)]}')
+
+            WebDriverWait(self.browser, settings.WORD_STAT["timeout"]).until(
+                lambda x: x.find_element(By.ID, "b-domik_popup-username")
             )
-        return browser
+            self.browser.find_element(By.ID, "b-domik_popup-username").send_keys(email)
+            self.browser.find_element(By.ID, "b-domik_popup-password").send_keys(password)
+            self.browser.find_element(
+                By.XPATH, 
+                "//form[@class='b-domik b-domik_"
+                "type_popup b-domik_position_top i-bem']"
+                "//input[@type='submit']"
+            ).click()
 
-    @staticmethod
-    def get_region_data():
-        env = environ.Env()
-
-        global_code = env.str("MY_TOURIST_GLOBAL_CODE", default=None)
-
-        if global_code is not None:
             try:
-                region = Region.objects.get(code=global_code)
-            except (IndexError, Region.DoesNotExist):
-                region = None
-        else:
-            region = (
-                HeatMap.objects.values("global_code")
-                .annotate(date=models.Max("date"))
-                .filter(
-                    date__lt=(
-                        datetime.datetime.now()
-                        - datetime.timedelta(days=env.int("HEAT_MAP_PERIOD", 7))
-                    ).strftime("%Y-%m-%d")
-                )[:1]
+                WebDriverWait(self.browser, settings.WORD_STAT["timeout"]).until(
+                    lambda x: x.find_element(By.CLASS_NAME, "b-head-user_js_inited")
+                )
+                authorized = True
+            except TimeoutException:
+
+                # Is control question
+                try:
+                    WebDriverWait(self.browser, settings.WORD_STAT["timeout"]).until(
+                        lambda x: x.find_element(By.ID, "passp-field-question")
+                    )
+
+                    self.browser.find_element(By.ID, "passp-field-question").send_keys(answer)
+
+                    self.browser.find_element(
+                        By.XPATH,
+                        "//form[@class='auth-challenge__question-form']"
+                        "//button[@type='submit']"
+                    ).click()
+                    try:
+                        WebDriverWait(self.browser, settings.WORD_STAT["timeout"]).until(
+                            lambda x: x.find_element(By.CLASS_NAME, "b-head-user_js_inited")
+                        )
+                        authorized = True
+                    except:
+                        pass
+
+                except TimeoutException:
+
+                    # Is captcha
+                    self.i_am_not_a_robot()
+
+                    try:
+                        WebDriverWait(self.browser, settings.WORD_STAT["timeout"]).until(
+                            lambda x: x.find_element(By.CLASS_NAME, "b-head-user_js_inited")
+                        )
+                        authorized = True
+                    except:
+                        pass
+    
+            return authorized
+
+        if yandex_login(email, password, answer):
+            self.stdout.write(
+                self.style.WARNING(f"Worker ID is {email}")
             )
+        else:
+            env = environ.Env()
 
-            if len(region):
-                global_code = region[0].get("global_code")
-                region = Region.objects.get(code=global_code)
+            yandex_login(
+                env.str("YANDEX_DEFAULT_EMAIL"), 
+                env.str("YANDEX_DEFAULT_PASS"), 
+                env.str("YANDEX_DEFAULT_ANSWER"))
 
-        return global_code, region
 
-    @staticmethod
-    def get_queries(global_code, region, tourism_type, tourism_title):
+    def get_queries(self, tourism_type):
 
         queries = AppSettings.objects.get_or_create(
-            global_code=global_code, tourism_type=tourism_type
+            global_code_id=self.global_code, tourism_type=tourism_type[0]
         )[0].phrases.split("\n")
 
         queries = list(filter(lambda x: len(x) > 1, queries))
 
         if len(queries) == 0:
             queries = [
-                tourism_title + " " + region.title,
+                f"{tourism_type[1]} {self.home_region.title}",
             ]
         return queries
 
-    @staticmethod
-    def get_stat(browser, queries, regions_keys):
+    def get_cache_key_prefix(self, tourism_type):
+        return f"{self.global_code}_{tourism_type[0]}"
 
-        stat = Counter(dict.fromkeys(regions_keys, np.array([0, 0])))
+    def get_stat(self, tourism_type, regions_keys):
 
-        for q in tqdm(queries):
-            browser.get(settings.WORD_STAT["url"] + q)
-            time.sleep(5 + 10 * np.random.random() + 5 * np.random.random())
+        queries = self.get_queries(tourism_type)
+        cached_q = cache.get(f"{self.get_cache_key_prefix(tourism_type)}_q")
 
-            page_data = WebDriverWait(browser, settings.WORD_STAT["timeout"]).until(
-                lambda x: x.find_element_by_class_name("b-regions-statistic_js_inited")
+        q_index = queries.index(cached_q) if cached_q else -1
+
+        stat = cache.get(f"{self.get_cache_key_prefix(tourism_type)}_stat") or \
+            Counter(dict.fromkeys(regions_keys, np.array([0, 0])))
+
+        for q in tqdm(
+            queries[q_index + 1:], 
+            initial=q_index + 1, total=len(queries)):
+
+            self.get_browser().get(settings.WORD_STAT["url"] + q)
+            time.sleep(np.random.randint(2, 6))
+
+            page_data = WebDriverWait(self.get_browser(), settings.WORD_STAT["timeout"]).until(
+                lambda x: x.find_element(By.CLASS_NAME, "b-regions-statistic_js_inited")
             )
 
             regions_stat = None
-
             try:
                 regions_stat = json.loads(page_data.get_attribute("onclick")[7:])[
                     "b-regions-statistic"
                 ]["regions"]
             except StaleElementReferenceException:
-                time.sleep(np.random.random())
+                self.i_am_not_a_robot()
 
             if regions_stat is None:
                 try:
@@ -167,7 +277,24 @@ class Command(BaseCommand):
                         dtype=np.float,
                     )
             stat.update(stat_data)
+
+            cache.set(f"{self.get_cache_key_prefix(tourism_type)}_stat", stat)
+            cache.set(f"{self.get_cache_key_prefix(tourism_type)}_q", q)
+
         return stat
+
+    def is_fresh(self, tourism_type):
+
+        env = environ.Env()
+
+        try:
+            return HeatMap.objects.filter(
+                tourism_type=tourism_type[0],
+                global_code=self.global_code
+            )[0].date > (datetime.datetime.now() \
+                - datetime.timedelta(days=env.int("HEAT_MAP_PERIOD", 7))).date()
+        except IndexError:
+            return False
 
     @staticmethod
     def calc_extra(stat):
@@ -186,15 +313,14 @@ class Command(BaseCommand):
             stat[key] = np.append(data, weighted_popularity / weighted_popularity_max)
         return stat
 
-    @staticmethod
-    def save_data(stat, regions_instances, region, tourism_type):
+    def save_data(self, stat, regions_instances, tourism_type):
         # saving data to DB
         for key, data in stat.items():
             qty, popularity, _, popularity_norm = data
             heat_map_rec, _ = HeatMap.objects.get_or_create(
                 code=regions_instances[key],
-                global_code=region,
-                tourism_type=tourism_type,
+                global_code=self.home_region,
+                tourism_type=tourism_type[0],
                 date=datetime.datetime.now().strftime("%Y-%m-%d"),
             )
             setattr(heat_map_rec, "qty", qty)
@@ -202,7 +328,10 @@ class Command(BaseCommand):
             setattr(heat_map_rec, "popularity_norm", popularity_norm)
             heat_map_rec.save()
 
-    @db_mutex("update_heat_map")
+        cache.delete_many(
+            [f"{self.get_cache_key_prefix(tourism_type)}_stat", 
+            f"{self.get_cache_key_prefix(tourism_type)}_q"])
+
     def handle(self, *args, **options):
         """
         Updates the Heat Map
@@ -210,45 +339,37 @@ class Command(BaseCommand):
         :param options: dict
         :return: None
         """
-        global_code, region = Command.get_region_data()
 
-        if global_code is not None:
-            if isinstance(region, Region) and hasattr(region, "credentials_codes"):
-                self.stdout.write(self.style.NOTICE(region.title))
+        if self.global_code is not None:
+            if isinstance(self.home_region, Region): 
+                self.stdout.write(self.style.NOTICE(self.home_region.title))
 
-                qs_regions = Region.objects.all()
-
-                regions = {
-                    r["region"]: r["code"]
-                    for r in list(qs_regions.values("region", "code"))
-                }
-                regions_keys = set(regions.keys())
-                regions_instances = {r.region: r for r in qs_regions}
-
-                with Command.get_browser() as browser:
-
-                    browser.get(settings.WORD_STAT["url"] + "туризм")
-
-                    browser = Command.yandex_authorize(
-                        browser,
-                        getattr(region.credentials_codes, "yandex_email"),
-                        getattr(region.credentials_codes, "yandex_pass"),
-                    )
-
-                    for tourism_type, tourism_title in settings.TOURISM_TYPES:
-
+                for tourism_type in settings.TOURISM_TYPES:
+                    if self.is_fresh(tourism_type):
                         self.stdout.write(
-                            self.style.WARNING("Refreshing of " + tourism_type)
+                            self.style.WARNING(f"Type {tourism_type[0]} is already up to date")
                         )
+                    else:
+                        try:
+                            with db_mutex(f"update_heat_map_{self.global_code}_{tourism_type[0]}"):
+                                qs_regions = Region.objects.all()
+                                regions = {
+                                    r["region"]: r["code"]
+                                    for r in list(qs_regions.values("region", "code"))
+                                }
 
-                        queries = Command.get_queries(
-                            global_code, region, tourism_type, tourism_title
-                        )
-                        stat = Command.get_stat(browser, queries, regions_keys)
-                        stat = Command.calc_extra(stat)
-                        Command.save_data(stat, regions_instances, region, tourism_type)
+                                self.stdout.write(self.style.WARNING("Refreshing of " + tourism_type[0]))
+                                stat = self.get_stat(tourism_type, set(regions.keys()))
+                                self.save_data(
+                                    Command.calc_extra(stat), 
+                                    {r.region: r for r in qs_regions}, 
+                                    tourism_type)
+                        except (DBMutexError, DBMutexTimeoutError):
+                            self.stdout.write(
+                                self.style.WARNING(f"Type {tourism_type[0]} is in another process")
+                            )
+                            continue
 
-                        time.sleep(10 * np.random.random())
             else:
                 self.stdout.write(self.style.ERROR("Wrong region code."))
         else:

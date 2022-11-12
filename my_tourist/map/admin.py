@@ -35,8 +35,9 @@ class RegionAdmin(admin.ModelAdmin):
     list_display = (
         "code",
         "title",
+        "yandex_email",
+        "yandex_answer",
         "is_pub",
-        "created",
         "modified",
     )
 
@@ -57,6 +58,12 @@ class RegionAdmin(admin.ModelAdmin):
         UserInline,
         CredentialsInline,
     )
+
+    def yandex_email(self, obj):
+            return obj.credentials_codes.yandex_email
+
+    def yandex_answer(self, obj):
+            return obj.credentials_codes.yandex_answer
 
     def has_delete_permission(self, request, obj=None):
         return False

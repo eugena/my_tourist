@@ -25,11 +25,11 @@ DEBUG = env.bool("DJANGO_DEBUG", False)
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = "Europe/Moscow"
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = "ru-ru"
+LANGUAGE_CODE = "ru-RU"
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
-USE_I18N = True
+USE_I18N = False
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-l10n
 USE_L10N = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-tz
@@ -47,6 +47,7 @@ DATABASES = {"default": env.db("DATABASE_URL", default="sqlite:////:memory:")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
+
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -100,8 +101,8 @@ LOGIN_URL = "/login/"
 AUTH_USER_MODEL = "users.User"
 
 OAUTH_PROVIDER_URL = "https://leader-id.ru"
-OAUTH_CLIENT_ID = env.str("OAUTH_CLIENT_ID", default="")
-OAUTH_CLIENT_SECRET = env.str("OAUTH_CLIENT_SECRET", default="")
+OAUTH_CLIENT_ID = env.str("OAUTH_CLIENT_ID", default="69a90ba45670ff2453a8558b3251ac6d")
+OAUTH_CLIENT_SECRET = env.str("OAUTH_CLIENT_SECRET", default="161f2c2c2fb2de07069de31ab503fa39")
 
 
 # PASSWORDS
@@ -287,7 +288,7 @@ SEX = (
 )
 
 WORD_STAT = {
-    "timeout": 60,
+    "timeout": 30,
     "url": "https://wordstat.yandex.ru/#!/regions?=&filter=regions&words=",
 }
 

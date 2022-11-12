@@ -72,6 +72,12 @@ class RegionCredentials(TimeStampedModel):
         null=True,
         blank=True,
     )
+    yandex_answer = models.CharField(
+        "Ответ в Яндекс",
+        max_length=100,
+        null=True,
+        blank=True,
+    )
     vk_email = models.CharField(
         "Логин в ВК (email)",
         max_length=40,
