@@ -7,7 +7,7 @@ set -o nounset
 python manage.py migrate
 
 # Data loading
-if [ ! -f my_tourist/map/fixtures/heatmap.yaml ]; then
+if [ -e my_tourist/map/fixtures/heatmap.yaml ]; then
     python manage.py loaddata my_tourist/map/fixtures/heatmap.yaml
 fi
 
