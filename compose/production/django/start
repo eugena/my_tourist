@@ -4,10 +4,14 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+python manage.py migrate
+
 # Data loading
+if [ ! -f my_tourist/map/fixtures/heatmap.yaml ]; then
+    python manage.py loaddata my_tourist/map/fixtures/heatmap.yaml
+fi
+
 # (only for the first build)
-#
-# python manage.py migrate
 #
 # python manage.py loaddata my_tourist/users/fixtures/user.yaml
 #
@@ -23,8 +27,6 @@ set -o nounset
 # python manage.py ipgeobase_update
 
 python /app/manage.py collectstatic --noinput
-
-python /app/manage.py migrate
 
 compress_enabled() {
 python << END

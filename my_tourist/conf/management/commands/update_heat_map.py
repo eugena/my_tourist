@@ -159,6 +159,8 @@ class Command(BaseCommand):
                 chrome_options.add_extension(plugin_file)
 
             try:
+                # chrome_options.add_argument("--headless")
+                # chrome_options.add_argument("--no-sandbox")
                 self.browser = webdriver.Remote(
                     f"http://{settings.REMOTE_WEB_DRIVER_HOST}:4444/wd/hub",
                     options=chrome_options)
@@ -166,7 +168,6 @@ class Command(BaseCommand):
                 try:
                     if _platform == "linux" or _platform == "linux2":
                         chrome_options.add_argument("--headless")
-                        chrome_options.add_argument("start-maximized")
                         chrome_options.add_argument("--disable-gpu")
                         chrome_options.add_argument("disable-infobars")
                         chrome_options.add_argument("--disable-extensions")
