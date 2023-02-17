@@ -25,6 +25,6 @@ django-ipware==4.0.2  # https://github.com/un33k/django-ipware
 
 PyYAML==6.0  # https://github.com/yaml/pyyaml
 tqdm==4.64.1  # https://github.com/tqdm/tqdm
-selenium==4.7.0  # https://github.com/SeleniumHQ/selenium
+selenium==4.8.1  # https://github.com/SeleniumHQ/selenium
 matplotlib==3.6.2  # https://github.com/matplotlib/matplotlib
 vk-api==11.9.9 # https://github.com/python273/vk_api
