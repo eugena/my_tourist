@@ -13,7 +13,7 @@ psycopg2-binary==2.9.5 # https://github.com/psycopg/psycopg2-wheels
 django==4.1.3  # pyup: < 3.1  # https://www.djangoproject.com/
 django-environ==0.9.0  # https://github.com/joke2k/django-environ
 django-model-utils==4.3.1  # https://github.com/jazzband/django-model-utils
-django-allauth==0.51.0  # https://github.com/pennersr/django-allauth
+django-allauth==0.54.0  # https://github.com/pennersr/django-allauth
 django-redis==5.2.0  # https://github.com/jazzband/django-redis
 
 # Application
