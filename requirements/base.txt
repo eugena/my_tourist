@@ -1,10 +1,10 @@
 pytz==2022.6  # https://github.com/stub42/pytz
 python-slugify==7.0.0  # https://github.com/un33k/python-slugify
-Pillow==9.3.0  # https://github.com/python-pillow/Pillow
+Pillow==10.2.0  # https://github.com/python-pillow/Pillow
 rcssmin==1.1.1  # https://github.com/ndparker/rcssmin
 argon2-cffi==21.3.0  # https://github.com/hynek/argon2_cffi
 whitenoise==6.2.0  # https://github.com/evansd/whitenoise
-redis==4.3.5  # https://github.com/andymccurdy/redis-py
+redis==4.3.6  # https://github.com/andymccurdy/redis-py
 hiredis==2.0.0  # https://github.com/redis/hiredis-py
 psycopg2-binary==2.9.5 # https://github.com/psycopg/psycopg2-wheels
 
@@ -25,6 +25,6 @@ django-ipware==4.0.2  # https://github.com/un33k/django-ipware
 
 PyYAML==6.0  # https://github.com/yaml/pyyaml
 tqdm==4.64.1  # https://github.com/tqdm/tqdm
-selenium==4.7.0  # https://github.com/SeleniumHQ/selenium
+selenium==4.15.1  # https://github.com/SeleniumHQ/selenium
 matplotlib==3.6.2  # https://github.com/matplotlib/matplotlib
 vk-api==11.9.9 # https://github.com/python273/vk_api
